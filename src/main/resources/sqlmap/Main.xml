@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Main">
+
+	<resultMap id="MainHeadlineValue" class="java.util.HashMap" >
+		<result property="data_seq"   	column="data_seq" />
+		<result property="bname"   		column="bname" />
+		<result property="title"   		column="title" />
+		<result property="contents"   	column="contents" jdbcType="TEXT" javaType="java.lang.String" />
+		<result property="bid"   		column="bid" />
+		<result property="data_bid"   	column="data_bid" />
+		<result property="cate1"   		column="cate1" />
+		<result property="cate2"   		column="cate2" />
+		<result property="regdate"   	column="regdate" />
+		<result property="o_filename"  	column="o_filename" />
+		<result property="filename"   	column="filename" />
+		<result property="origin"   	column="origin" />
+		<result property="site"   		column="site" />
+		<result property="icon"   		column="icon" />
+	</resultMap>
+	
+	<resultMap class="java.util.HashMap" id="collectionMap">
+		<result property="collection_sn"   		column="collection_sn" />
+		<result property="collection_nm"   		column="collection_nm" />
+		<result property="rgsde"   				column="rgsde" />
+		<result property="collection_sumry"   	column="collection_sumry" jdbcType="TEXT" javaType="java.lang.String"/>
+		<result property="file_nm"   			column="file_nm" />
+	</resultMap>
+	
+	<resultMap class="java.util.HashMap" id="focusMap">
+		<result property="seq"   			column="seq" />
+		<result property="bid"   			column="bid" />
+		<result property="filename"   		column="filename" />
+		<result property="link_bid"   		column="link_bid" />
+		<result property="title"   			column="title" />
+		<result property="link_addr"   		column="link_addr" />
+		<result property="bname"   			column="bname" />
+		<result property="contents"   		column="contents" jdbcType="TEXT" javaType="java.lang.String"/>
+	</resultMap>
+	
+	<resultMap class="java.util.HashMap" id="rsltnewsMap">
+		<result property="rsrch_rslt_sn"   		column="rsrch_rslt_sn" />
+		<result property="rslt_nm"   			column="rslt_nm" />
+		<result property="rgsde"   				column="rgsde" />
+		<result property="sport_instt"   		column="sport_instt" />
+		<result property="core_cn"   			column="core_cn" jdbcType="TEXT" javaType="java.lang.String"/>
+	</resultMap>
+	
+	<resultMap class="java.util.HashMap" id="headnewsMap">
+		<result property="hbrd_news_sn"   		column="hbrd_news_sn" />
+		<result property="hbrd_news_sj"   		column="hbrd_news_sj" />
+		<result property="hbrd_se"   			column="hbrd_se" />
+		<result property="hbrd_news_cn"   		column="hbrd_news_cn" jdbcType="TEXT" javaType="java.lang.String"/>
+		<result property="origin"   			column="origin" />
+		<result property="rgsde"   				column="rgsde" />
+		<result property="filename"   			column="filename" />
+		<result property="cn_glan"   			column="cn_glan" />
+	</resultMap>
+	
+	<sql id="veiwData">
+	WITH v_data AS (
+		SELECT bid, ref as rdcnt, to_char(regdate,'YYYY-MM-DD') as rgsde, seq, title, contents, ORIGIN, to_char(tag) as kwrd
+		FROM bbs_data
+		WHERE TMPR_STRE_AT = 'N'
+			UNION ALL
+		SELECT bid, rdcnt, to_char(rgsde,'YYYY-MM-DD') as rgsde , rsrch_rslt_sn as seq, rslt_nm as title, CORE_CN as contents, RSRCH_INSTT as ORIGIN, kwrd
+		FROM rsrch_rslt
+		WHERE TMPR_STRE_AT = 'N'
+			UNION ALL
+		SELECT hbrd_se, rdcnt, to_char(rgsde,'YYYY-MM-DD') as rgsde, hbrd_news_sn as seq, hbrd_news_sj as title, HBRD_NEWS_CN as contents, ORIGIN, kwrd
+		FROM hbrd_news
+		WHERE TMPR_STRE_AT = 'N'
+			UNION ALL
+		SELECT bid, rdcnt, to_char(rgsde,'YYYY-MM-DD') as rgsde, entrprs_intrcn_sn as seq, ENTRPRS_NM as title, ENTRPRS_INTRCN as contents, null as ORIGIN, kwrd
+		FROM entrprs_intrcn
+		WHERE TMPR_STRE_AT = 'N'
+			UNION ALL
+		SELECT bid, rdcnt,  to_char(rgsde,'YYYY-MM-DD') as rgsde, event_edc_sn as seq, event_nm as title, EVENT_EDC_CN as contents, MNGT_INSTT as ORIGIN, kwrd
+		FROM event_edc
+		WHERE TMPR_STRE_AT = 'N'
+			UNION ALL
+		SELECT bid, rdcnt, to_char(BGNDE,'YYYY-MM-DD HH24:MI')||' - '|| to_char(ENDDE,'YYYY-MM-DD HH24:MI') as rgsde, bklet_pblanc_sn as seq, subject as title, contents, null as ORIGIN
+		, null as kwrd
+    	FROM bklet_pblanc
+    	WHERE TMPR_STRE_AT = 'N'
+			UNION ALL
+		SELECT 'wrt_staff' as bid, rdcnt,  to_char(rgsde,'YYYY-MM-DD') as rgsde, writ_rcrit_sn as seq, rcrit_sj as title, RCRIT_CN as contents, null as ORIGIN
+		, null as kwrd
+    	FROM writ_rcrit
+  	)
+	</sql>
+	
+	<select id="getObjectMap" resultMap="MainHeadlineValue" parameterClass="map">
+	/* Main.getObjectMap */
+		SELECT  data_seq, bname, title, contents, bbs_bid as bid, data_bid,
+        		cate1, cate2, regdate, o_filename, filename, origin, icon, site
+        FROM BBS_FILES RIGHT JOIN
+			(SELECT  *
+				FROM(
+					SELECT 
+						data.seq			as data_seq
+						, info.bname		as bname
+						, data.title			as title
+						, data.contents	as contents
+						, data.bid			as bbs_bid
+						, data.bid			as data_bid
+						, ''							as cate1
+						, ''							as cate2
+						, data.regdate	as regdate
+						, data.origin		as origin
+						, info.icon		as icon
+						, data.site		as site
+						, data.notice   as notice
+					FROM bbs_data data
+						LEFT JOIN bbs_info info ON data.bid = info.bid
+					WHERE 1=1
+						<isEqual property="bid" compareValue="headline">
+							AND data.bid IN ('todaynews', 'overseanews') AND data.notice = 1
+						</isEqual>
+						<isNotEqual property="bid" compareValue="headline">
+							AND data.bid = #bid#
+						</isNotEqual>
+					ORDER BY data.notice DESC, data.regdate DESC, data.seq DESC)
+			WHERE ROWNUM = 1)
+		ON bno = data_seq AND flag = '1'
+		ORDER BY notice DESC, regdate DESC, data_seq DESC
+	</select>
+	
+	
+</sqlMap>

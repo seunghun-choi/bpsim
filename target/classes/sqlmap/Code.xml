@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Code">
+
+	<resultMap id="PolicyLargeCode" class="java.util.HashMap" >
+		<result property="clCode" column="CL_CODE" />
+		<result property="clCodeNm" column="CL_CODE_NM" />
+		<result property="clCodeDc" column="CL_CODE_DC" />
+		<result property="useAt" column="USE_AT" />
+		<result property="menuPrpos" column="MENU_PRPOS" />
+	</resultMap>
+	
+	<resultMap id="PolicyMediumCode" class="java.util.HashMap" >
+		<result property="codeId" column="CODE_ID" />
+		<result property="codeIdNm" column="CODE_ID_NM" />
+		<result property="codeIdDc" column="CODE_ID_DC" />
+		<result property="useAt" column="USE_AT" />
+		<result property="clCode" column="CL_CODE" />
+	</resultMap>	
+	
+	<resultMap id="PolicySmallCode" class="java.util.HashMap" >
+		<result property="codeId" column="CODE_ID" />
+		<result property="useAt" column="USE_AT" />
+		<result property="clCode" column="CL_CODE" />
+		<result property="code" column="CODE" />
+		<result property="codeNm" column="CODE_NM" />
+		<result property="useAt" column="USE_AT" />
+<!-- 		<result property="sort" column="SORT" /> -->
+	</resultMap>	
+	
+	<select id="getPolicyLargeCode" resultMap="PolicyLargeCode" parameterClass="map">
+	/* Code.getPolicyLargeCode */
+		SELECT CL_CODE, CL_CODE_NM, CL_CODE_DC, USE_AT, MENU_PRPOS
+			FROM COMTCCMMNCLCODE
+				WHERE 1=1
+					AND USE_AT = 'Y'
+					AND CL_CODE LIKE '%BP%'
+	</select>
+	
+	<select id="getPolicyMediumCode" resultMap="PolicyMediumCode" parameterClass="map">
+	/* Code.getPolicyMediumCode */
+		SELECT CODE_ID, CODE_ID_NM, CODE_ID_DC, USE_AT, CL_CODE
+			FROM COMTCCMMNCODE
+				WHERE 1=1
+					<isNotEmpty property="code">
+					AND CL_CODE = #code#
+					</isNotEmpty>
+					AND USE_AT = 'Y'
+					AND CL_CODE LIKE '%BP%'
+	</select>	
+	
+	<select id="getPolicySmallCode" resultMap="PolicySmallCode" parameterClass="map">
+	/* Code.getPolicySmallCode */
+		SELECT CL_CODE, CODE_ID, CODE, CODE_NM, USE_AT, USE_AT
+			FROM COMTCCMMNDETAILCODE
+				WHERE 1=1
+					<isNotEmpty property="code">
+					AND CODE_ID = #code#
+					</isNotEmpty>
+					AND USE_AT = 'Y'
+					AND CL_CODE LIKE '%BP%'
+				ORDER BY SORT ASC
+	</select>	
+	
+	<!-- 신바이오분류체계 대분류 -->	
+	<select id="getNewBioLclsfList" resultClass="hmap" parameterClass="map">
+	/* Code.getNewBioLclsfList */	
+		SELECT CL_CODE AS CODE_ID
+		 	 , CL_CODE_NM AS CODE_NM
+		FROM BIOZINE.COMTCCMMNCLCODE
+		WHERE USE_AT   = 'Y'
+			AND MENU_PRPOS = 'BBS'
+		ORDER BY CL_CODE
+
+	</select>
+	
+	<!-- 신바이오분류체계 중분류 -->	
+	<select id="getNewBioMclsfList" resultClass="hmap" parameterClass="map">
+	/* Code.getNewBioMclsfList */	
+		SELECT 
+		  CODE.CODE_ID  AS CODE_ID, 
+		  CODE.CODE_ID_NM AS CODE_NM
+		FROM BIOZINE.COMTCCMMNCLCODE CLCODE,
+		  	 BIOZINE.COMTCCMMNCODE CODE
+		WHERE CLCODE.USE_AT   = 'Y'
+			AND CODE.USE_AT       = 'Y'
+			AND CLCODE.CL_CODE    = CODE.CL_CODE
+			AND CLCODE.MENU_PRPOS = 'BBS'
+			<isNotEmpty property="code">
+			AND CODE.CODE_ID LIKE '%' || #code# || '%'
+			</isNotEmpty>
+		ORDER BY CLCODE.CL_CODE, CODE.CODE_ID
+	</select>
+	
+	<!-- 신바이오분류체계 소분류 -->	
+	<select id="getNewBioSclsfList" resultClass="hmap" parameterClass="map">
+	/* Code.getNewBioSclsfList */
+		SELECT 
+			  DETAIL.CODE  AS CODE_ID,
+			  DETAIL.CODE_NM AS CODE_NM
+		FROM BIOZINE.COMTCCMMNCLCODE CLCODE,
+		  BIOZINE.COMTCCMMNCODE CODE,
+		  BIOZINE.COMTCCMMNDETAILCODE DETAIL
+		WHERE CLCODE.USE_AT   = 'Y'
+			AND CODE.USE_AT       = 'Y'
+			AND DETAIL.USE_AT     = 'Y'
+			AND CLCODE.CL_CODE    = CODE.CL_CODE
+			AND CODE.CODE_ID      = DETAIL.CODE_ID
+			AND DETAIL.CL_CODE    = CLCODE.CL_CODE
+			AND CLCODE.MENU_PRPOS = 'BBS'
+			<isNotEmpty property="code"> 
+			AND DETAIL.CODE LIKE '%' || #code# || '%'
+			</isNotEmpty>
+		ORDER BY CLCODE.CL_CODE, CODE.CODE_ID, DETAIL.CODE
+	</select>	
+	
+	
+</sqlMap>

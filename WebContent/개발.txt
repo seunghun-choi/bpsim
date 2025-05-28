@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+	
+	<!-- INIT DEFAULT -->
+
+	<mvc:annotation-driven validator="validator" conversion-service="conversionService" />
+
+	<mvc:resources mapping="/wcom/**" location="/wcom/"/>
+
+	<!-- 뷰어 정적 파일(js,img 등) 및 스킨 파일 경로 지정 - [로컬, 개발 비활성화] -->
+	<!--<mvc:resources mapping="/synap/**" location="/synap/"/>-->
+	
+	<mvc:resources mapping="/storage/**" location="file:D:/storage/" />
+	
+	<mvc:default-servlet-handler default-servlet-name="default" />
+
+	<import resource="controllers.xml" />
+	
+	<!-- Scan for Spring beans declared via annotations -->
+	
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+	
+	<bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<property name="converters">
+			<bean class="kr.re.kribb.com.converter.StringTrimmerConverter" />
+		</property>
+		<property name="formatters">
+			<bean class="kr.re.kribb.com.mvc.data.MaskFormatAnnotationFormatterFactory" />
+		</property>
+	</bean>
+	
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<mvc:exclude-mapping path="/favicon.ico"/>
+			<mvc:exclude-mapping path="/storage/**"/>
+			<mvc:exclude-mapping path="/wcom/**"/>
+			<mvc:exclude-mapping path="/images/**"/>
+			<mvc:exclude-mapping path="/**/ajax/**"/>
+			<mvc:exclude-mapping path="/**/json/**"/>
+			<mvc:exclude-mapping path="/*.html"/>
+			<mvc:exclude-mapping path="/Dext5/**"/>
+			<mvc:exclude-mapping path="/**/dext5handler"/>
+			<mvc:exclude-mapping path="/ceditor/**"/>
+			<bean class="kr.re.kribb.com.interceptor.ApplicationInterceptor" />
+		</mvc:interceptor>
+		
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<bean class="kr.re.kribb.com.interceptor.ExchangeIntercepter" />
+		</mvc:interceptor>
+		
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<bean class="kr.re.kribb.com.interceptor.RequestLoggingIntercepter" />
+		</mvc:interceptor>
+		
+		<mvc:interceptor>
+			<mvc:mapping path="/**/search" />
+			<mvc:mapping path="/**/*Search" />
+			<bean class="kr.re.kribb.com.interceptor.SavePagedListHolderIntercepter" />
+		</mvc:interceptor>
+
+		<mvc:interceptor>
+			<mvc:mapping path="/bForum/**" />
+			<mvc:mapping path="/mng/bForum/**" />
+			<bean class="kr.re.kribb.com.interceptor.BForumIntercepter" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+	<aop:aspectj-autoproxy />
+
+	<tx:annotation-driven/>
+	
+	<tx:advice id="comTransactionAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*Read" read-only="true" />
+			<tx:method name="*Add" propagation="REQUIRED" />
+			<tx:method name="*Mod" propagation="REQUIRED" />
+			<tx:method name="*Del" propagation="REQUIRED" />
+			<tx:method name="*List" read-only="true" />
+			<tx:method name="*Count" read-only="true" />
+			<tx:method name="*Json" propagation="REQUIRED" />
+			<tx:method name="*Search" read-only="true" />
+			<tx:method name="*Cancel" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+	
+	<tx:advice id="pubTransactionAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*Read" read-only="true" />
+			<tx:method name="*Add" propagation="REQUIRED" />
+			<tx:method name="*Mod" propagation="REQUIRED" />
+			<tx:method name="*Del" propagation="REQUIRED" />
+			<tx:method name="*List" read-only="true" />
+			<tx:method name="*Count" read-only="true" />
+			<tx:method name="*Json" propagation="REQUIRED" />
+			<tx:method name="*Search" read-only="true" />
+			<tx:method name="*Cancel" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+	
+	<tx:advice id="commtyTransactionAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*Read" read-only="true" />
+			<tx:method name="*Add" propagation="REQUIRED" />
+			<tx:method name="*Mod" propagation="REQUIRED" />
+			<tx:method name="*Del" propagation="REQUIRED" />
+			<tx:method name="*List" read-only="true" />
+			<tx:method name="*Count" read-only="true" />
+			<tx:method name="*Json" propagation="REQUIRED" />
+			<tx:method name="*Search" read-only="true" />
+			<tx:method name="*Cancel" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+	
+	<tx:advice id="mngTransactionAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*Read" read-only="true" />
+			<tx:method name="*Add" propagation="REQUIRED" />
+			<tx:method name="*Mod" propagation="REQUIRED" />
+			<tx:method name="*Del" propagation="REQUIRED" />
+			<tx:method name="*List" read-only="true" />
+			<tx:method name="*Count" read-only="true" />
+			<tx:method name="*Json" propagation="REQUIRED" />
+			<tx:method name="*Search" read-only="true" />
+			<tx:method name="*Cancel" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+
+	<tx:advice id="synbioTransactionAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*Read" read-only="true" />
+			<tx:method name="*Add" propagation="REQUIRED" />
+			<tx:method name="*Mod" propagation="REQUIRED" />
+			<tx:method name="*Del" propagation="REQUIRED" />
+			<tx:method name="*List" read-only="true" />
+			<tx:method name="*Count" read-only="true" />
+			<tx:method name="*Json" propagation="REQUIRED" />
+			<tx:method name="*Search" read-only="true" />
+			<tx:method name="*Cancel" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+	
+	<aop:config>
+		<aop:advisor pointcut="execution(* kr.re.kribb.com..service.*Service.*(..))" advice-ref="comTransactionAdvice" />
+	</aop:config>
+
+	<aop:config>
+		<aop:advisor pointcut="execution(* kr.re.kribb.pub..service.*Service.*(..))" advice-ref="pubTransactionAdvice" />
+	</aop:config>
+
+	<aop:config>
+		<aop:advisor pointcut="execution(* kr.re.kribb.mng..service.*Service.*(..))" advice-ref="mngTransactionAdvice" />
+	</aop:config>
+
+	<aop:config>
+		<aop:advisor pointcut="execution(* kr.re.kribb.synbio..service.*Service.*(..))" advice-ref="synbioTransactionAdvice" />
+	</aop:config>
+	
+	<aop:config>
+		<aop:advisor pointcut="execution(* kr.re.kribb.commty..service.*Service.*(..))" advice-ref="commtyTransactionAdvice" />
+	</aop:config>
+
+	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="order" value="1" />
+		<property name="defaultContentType" value="text/html" /> 
+		<property name="favorPathExtension" value="false" />
+		<property name="ignoreAcceptHeader" value="false" /> 
+		<property name="mediaTypes">
+			<map>
+				<entry key="down" value="application/down" />
+				<entry key="pdf" value="application/pdf" />
+				<entry key="xls" value="application/xls" />
+				<entry key="json" value="application/json" />
+				<entry key="xml" value="application/xml" />
+			</map>
+		</property>
+		<property name="defaultViews">
+			<list>
+				<bean class="kr.re.kribb.com.view.DownloadView" />
+				<bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+				<bean class="org.springframework.web.servlet.view.xml.MarshallingView">
+					<property name="modelKey" value="result"/>
+					<property name="marshaller">
+						<bean class="org.springframework.oxm.xstream.XStreamMarshaller">
+							<property name="autodetectAnnotations" value="true"/>
+							<property name="streamDriver">
+								<bean class="com.thoughtworks.xstream.io.xml.XppDriver">
+									<constructor-arg>
+										<bean class="com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder">
+											<constructor-arg index="0" value="_-"/>
+											<constructor-arg index="1" value="_"/>
+										</bean>
+									</constructor-arg>
+								</bean>
+							</property>
+						</bean>
+					</property>
+				</bean>
+			</list>
+		</property>
+		<property name="viewResolvers">
+			<list>
+				<bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+					<property name="order" value="2" />
+				</bean>
+				<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+					<property name="prefix" value="/WEB-INF/views/" />
+					<property name="suffix" value=".jsp" />
+					<property name="order" value="3" />
+				</bean>
+			</list> 
+		</property>
+	</bean>
+	
+	<!-- INIT CUSTOM UTILS -->
+	<bean class="kr.re.kribb.com.util.FileUtils" init-method="initialize">
+		<constructor-arg index="0" value="#{com['storagePath']}" type="java.lang.String"/>
+	</bean>
+	<bean class="kr.re.kribb.com.util.CommFileUtils" init-method="initialize">
+		<constructor-arg index="0" value="#{com['storagePath']}" type="java.lang.String"/>
+	</bean>
+	
+	<bean class="kr.re.kribb.com.util.CodeHelper" init-method="initialize"></bean>
+	<bean class="kr.re.kribb.com.util.UserHelper" init-method="initialize"></bean>
+</beans>

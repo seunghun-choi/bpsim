@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<head>
+<title>Innorix File Transfer Solution - Uninstall</title>
+<script type="text/javascript" src="./jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="./innorix.js"></script>
+<script type="text/javascript">
+	window.onload = function()
+	{
+		innomp_detected_os = browserDetect.OS;
+		
+		if (innomp_detected_os == "Win32") {
+			Utility.toggleShowHide("un_info", "un_info_win32");
+		}
+		else if (innomp_detected_os == "Linux i686") {
+			Utility.toggleShowHide("un_info", "un_info_linux");
+		}
+		else if (innomp_detected_os == "MacIntel") {
+			Utility.toggleShowHide("un_info", "un_info_mac");
+		}
+		else if (innomp_detected_os == "MacPPC") {
+			Utility.toggleShowHide("un_info", "un_info_mac");
+		}
+	}
+</script>
+</head>
+<body>
+
+	<br /><br /><br /><br /><br />
+	<table border="0" cellpadding="0" cellspacing="0" align="center"><tr><td>
+	<div class="un_info" id="un_info_win32" style="display: none">
+	<img src="image/uninstall_bg_win.gif">
+	</div>
+	<div class="un_info" id="un_info_linux" style="display: none">
+	<img src="image/uninstall_bg_linux.gif">
+	</div>
+	<div class="un_info" id="un_info_mac" style="display: none">
+	<img src="image/uninstall_bg_mac.gif">
+	</div>
+	</td></tr></table>
+
+</body>
+</html>

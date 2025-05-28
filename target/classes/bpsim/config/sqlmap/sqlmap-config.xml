@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+<!-- context-sqlmap.xml -->
+	<!-- settings -->
+	<settings useStatementNamespaces="true" maxRequests="256" maxSessions="64" maxTransactions="16" cacheModelsEnabled="false" />
+	
+	<!-- typeAlias -->
+	<typeAlias type="org.apache.commons.collections.map.CaseInsensitiveMap" alias="hmap" />
+	
+	<!-- resource -->
+
+	<!-- 공통 -->
+	<sqlMap resource="/sqlmap/Main.xml" />
+	
+	<!-- 로그인 -->
+	<sqlMap resource="/sqlmap/Member.xml" />
+	
+	<!-- 권한 관리 -->
+	<sqlMap resource="/sqlmap/Auth.xml" />
+	
+	<!-- 전문가 -->
+	<sqlMap resource="/sqlmap/Expert.xml" />
+	
+	<!-- 전문가 임시 -->
+	<sqlMap resource="/sqlmap/ExpertTemp.xml" />
+	
+	<!-- 코드 -->
+	<sqlMap resource="/sqlmap/Code.xml" />
+	
+	<!-- 로그 -->
+	<sqlMap resource="/sqlmap/Log.xml" />
+	
+</sqlMapConfig>

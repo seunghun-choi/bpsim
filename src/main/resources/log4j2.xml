@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+<!-- 	<Appenders> -->
+<!--     	<Console name="console" target="SYSTEM_OUT"> -->
+<!-- 		<PatternLayout pattern="%d{HH:mm:ss.SSS} [%highlight{%level}{FATAL=bg_red, ERROR=red, WARN=yellow, INFO=green, DEBUG=blue}] %logger{36}.%M@L%L - %msg%n" disableAnsi="false"/> -->
+<!--         </Console> -->
+<!--         <RollingFile name="file" fileName="logs/bpsim_or_kr.log"  -->
+<!--         	filePattern="logs/$${date:yyyy}/$${date:MM}/bpsim_%d{yyyyMMddHH}.log"> -->
+<!-- 			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/> -->
+<!--             <Policies> -->
+<!--             	<TimeBasedTriggeringPolicy />Rotated everyday -->
+<!-- 			</Policies> -->
+<!--         </RollingFile> -->
+<!-- 	</Appenders> -->
+	<!-- Application Loggers -->
+	<Loggers> 
+       
+    	<Logger name="java.sql" level="off" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="egovframework" level="ERROR" additivity="false">
+            <AppenderRef ref="console" />
+            <AppenderRef ref="file"/> 
+        </Logger>
+        <Logger name="org.springframework" level="off" additivity="false">
+            <AppenderRef ref="console" /> 
+            <AppenderRef ref="file"/> 
+        </Logger>
+        <Logger name="org.springframework.web.servlet.dispatcherservlet" level="off" additivity="false">
+            <AppenderRef ref="console" /> 
+            <AppenderRef ref="file"/> 
+        </Logger>
+        <Logger name="org.springframework.jdbc.datasource.DataSourceUtils" level="off" additivity="false">
+            <AppenderRef ref="console" /> 
+            <AppenderRef ref="file"/> 
+        </Logger>
+        <Logger name="org.springframework.orm.ibatis.SqlMapClientTemplate" level="off" additivity="false">
+            <AppenderRef ref="console" /> 
+            <AppenderRef ref="file"/> 
+        </Logger>
+
+
+        <Logger name="jdbc.sqltiming" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="jdbc.resultsettable" level="DEBUG" additivity="false">
+            <AppenderRef ref="console"/>
+        </Logger>
+        <Logger name="jdbc.resultset" level="off" additivity="false">
+            <AppenderRef ref="console"/>
+        </Logger>
+        <Logger name="jdbc.sqlonly" level="off" additivity="false"> <!-- info / ERROR / DEBUG / off -->
+            <AppenderRef ref="console"/>
+        </Logger>
+
+        <Root level="ERROR">
+            <AppenderRef ref="console" />
+            <AppenderRef ref="file" />
+        </Root>
+    </Loggers>
+	
+</Configuration>

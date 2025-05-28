@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemesh>
+	<mapping path="/log/**"			decorator="/WEB-INF/decorators/usr/template_home.jsp"/>
+	<mapping path="/auth/**"		decorator="/WEB-INF/decorators/usr/template_home.jsp"/>
+	<mapping path="/expert/**"		decorator="/WEB-INF/decorators/usr/template_home.jsp"/>
+	
+	<mapping path="/auth/popup/**" exclude="true" />
+</sitemesh>

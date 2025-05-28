@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Member">
+	
+	<!-- 사용자가 로그인할 때 사용되는 쿼리 -->
+	<resultMap id="loginValue" class="java.util.HashMap">
+		<result property="hname"   		column="HNAME" />
+		<result property="userid"   	column="USERID" />
+		<result property="password"   	column="PASSWORD"  jdbcType="TEXT" javaType="java.lang.String"/>
+		<result property="authrtCd"   	column="AUTHRT_CD" />
+		<result property="codeNm"   	column="CODE_NM" />
+	</resultMap>
+	
+	<resultMap id="getMember" class="java.util.HashMap">
+		<result property="seq"				column="SEQ" />
+		<result property="hname"   			column="HNAME" />
+		<result property="userid"   		column="USERID" />
+		<result property="organization"   	column="ORGANIZATION" />
+		<result property="email"   			column="EMAIL" />
+		<result property="tel"   			column="TEL" />
+		<result property="hphone"   		column="HPHONE" />
+	</resultMap>
+	
+	<select id="getLoginValue" resultMap="loginValue" parameterClass="map">
+	/* Member.getLoginValue */
+		SELECT 
+		    mem.HNAME,
+		    mem.USERID,
+		    mem.PASSWD as PASSWORD,
+		    (CASE 
+		        WHEN AUTHRT_END_YMD <![CDATA[<]]> SYSDATE THEN NULL
+		        WHEN AUTHRT_END_YMD <![CDATA[>=]]> SYSDATE THEN lgn.AUTHRT_CD
+		    END) as AUTHRT_CD,
+		    c.CODE_NM
+		FROM
+		    biozine.UNITY_MEMBER mem
+		JOIN
+		    TB_LGN_INFO lgn ON mem.USERID = lgn.USERID
+		LEFT JOIN
+		    COMTCCMMNDETAILCODE c ON lgn.AUTHRT_CD = c.CODE
+		WHERE
+		    1=1
+		AND
+		    lgn.USERID = #userid#
+	</select>
+	
+	<select id="getMemberList" resultMap="getMember" parameterClass="map">
+	/* Member.getMemberList */
+	SELECT * FROM(
+		SELECT ROW_NUMBER() OVER (ORDER BY SEQ DESC) AS "ROWNUM"
+			, SEQ
+			, HNAME
+			, USERID
+			, ORGANIZATION
+			, EMAIL
+			, TEL
+			, HPHONE
+		    FROM(
+			SELECT
+				mem.SEQ
+			    , mem.HNAME
+			    , mem.USERID
+			    , mem.ORGANIZATION
+			    , mem.EMAIL
+			    , mem.TEL
+			    , mem.HPHONE
+			FROM
+			    biozine.UNITY_MEMBER mem
+			WHERE
+			    1=1
+			    <isNotNull property="searchInput1"><isNotEmpty property="searchInput1">
+			    	<isEqual property="search1" compareValue="hname">
+		        	AND mem.HNAME LIKE '%' || #searchInput1# || '%'
+		        	</isEqual>
+			    	<isEqual property="search1" compareValue="userid">
+		        	AND mem.USERID LIKE '%' || #searchInput1# || '%'
+		        	</isEqual>
+				</isNotEmpty></isNotNull>
+				AND NOT EXISTS (
+					SELECT 1
+					FROM TB_LGN_INFO lgn
+					WHERE lgn.USERID = mem.USERID
+				)
+			)T2
+		)T1
+		WHERE "ROWNUM" BETWEEN (($cPage$-1)*$intListCnt$)+1 AND ($cPage$*$intListCnt$)
+		ORDER BY SEQ DESC
+	</select>
+	
+	<select id="getMemberCnt" resultClass="int" parameterClass="map">
+	/* Member.getMemberCnt */
+		SELECT COUNT(*)
+			FROM
+			    biozine.UNITY_MEMBER mem
+			WHERE
+			    1=1
+			    <isNotNull property="searchInput1"><isNotEmpty property="searchInput1">
+			    	<isEqual property="search1" compareValue="hname">
+		        	AND mem.HNAME LIKE '%' || #searchInput1# || '%'
+		        	</isEqual>
+			    	<isEqual property="search1" compareValue="userid">
+		        	AND mem.USERID LIKE '%' || #searchInput1# || '%'
+		        	</isEqual>
+				</isNotEmpty></isNotNull>
+	</select>
+	
+	<select id="getMemberFullCnt" resultClass="int" parameterClass="map">
+	/* Member.getMemberFullCnt */
+		SELECT COUNT(*) FROM biozine.UNITY_MEMBER
+	</select>
+	
+	<insert id="insertAuth" parameterClass="map">
+	/* Member.insertAuth */
+		INSERT INTO TB_LGN_INFO
+			(USERID, AUTHRT_BGNG_TM, AUTHRT_END_YMD, FRST_RGTR_ID, FRST_REG_DT, LAST_MDFR_ID, LAST_MDFCN_DT, AUTHRT_CD)
+		VALUES
+			(#userid#, TO_DATE(#authrtBgngTm#, 'YYYY-MM-DD'), TO_DATE(#authrtEndYmd#, 'YYYY-MM-DD'), #frstRgtrId#, SYSDATE, #lastMdfrId#, SYSDATE, #authCd#)
+	</insert>
+
+</sqlMap>

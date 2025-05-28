@@ -1,0 +1,1224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Expert">
+
+	<resultMap id="ExpertList" class="java.util.HashMap" >
+	    <result property="exprtMngNo"    column="EXPRT_MNG_NO" />
+	    <result property="exprtNm"       column="EXPRT_NM" />
+	    <result property="exprtGndr"     column="EXPRT_GNDR" />
+	    <result property="brthDt"        column="BRTH_DT"/>
+	    <result property="ogdpNm"        column="OGDP_NM" />
+		<result property="deptNm"        column="DEPT_NM" />
+	    <result property="jbpsNm"        column="JBPS_NM" />
+	    <result property="mblTelno"      column="MBL_TELNO" />
+	    <result property="coTelno"       column="CO_TELNO" />
+	    <result property="emlAddr"       column="EML_ADDR" />
+	    <result property="asstEmlAddr"   column="ASST_EML_ADDR" />
+	    <result property="kywdNm"        column="KYWD_NM" />
+	    <result property="srcNm"         column="SRC_NM" />
+	    <result property="rmrkCn"        column="RMRK_CN" />
+	    <result property="imgFilePathNm" column="IMG_FILE_PATH_NM" />
+	    <result property="inqCnt"        column="INQ_CNT" />
+	    <result property="frstRgtrId"    column="FRST_RGTR_ID" />
+	    <result property="frstRegDt"     column="FRST_REG_DT" />
+	    <result property="lastMdfrId"    column="LAST_MDFR_ID" />
+	    <result property="lastMdfcnDt"   column="LAST_MDFCN_DT" />
+	    <result property="mngSeq"        column="MNG_SEQ" />
+	    <result property="lastIdntyYmd"        column="LAST_IDNTY_YMD" />
+	</resultMap>
+	
+	<select id="getExpertList" resultMap="ExpertList" parameterClass="map">
+	/* Expert.getExpertList */
+		SELECT * FROM(
+			SELECT DISTINCT ROW_NUMBER() OVER (ORDER BY LAST_MDFCN_DT DESC, MNG_SEQ DESC, EXPRT_MNG_NO DESC) AS "ROWNUM"
+				, T2.EXPRT_MNG_NO
+				, T2.EXPRT_NM
+				, T2.EXPRT_GNDR
+				, T2.BRTH_DT
+				, T2.OGDP_NM
+				, T2.DEPT_NM
+				, T2.JBPS_NM
+				, T2.MBL_TELNO
+				, T2.CO_TELNO
+				, T2.EML_ADDR
+				, T2.ASST_EML_ADDR
+				, T2.KYWD_NM
+				, T2.SRC_NM
+				, T2.RMRK_CN
+				, T2.IMG_FILE_PATH_NM
+				, T2.INQ_CNT
+				, T2.FRST_RGTR_ID
+				, T2.FRST_REG_DT
+				, T2.LAST_MDFR_ID
+				, T2.LAST_MDFCN_DT
+				, T2.MNG_SEQ
+				, T2.LAST_IDNTY_YMD
+			FROM(
+				SELECT DISTINCT T1.EXPRT_MNG_NO
+					, T1.EXPRT_NM
+					, T1.EXPRT_GNDR
+					, T1.BRTH_DT
+					, T1.OGDP_NM
+					, T1.DEPT_NM
+					, T1.JBPS_NM
+					, T1.MBL_TELNO
+					, T1.CO_TELNO
+					, T1.EML_ADDR
+					, T1.ASST_EML_ADDR
+					, T1.KYWD_NM
+					, T1.SRC_NM
+					, T1.RMRK_CN
+					, T1.IMG_FILE_PATH_NM
+					, T1.INQ_CNT
+					, T1.FRST_RGTR_ID
+					, T1.FRST_REG_DT
+					, T1.LAST_MDFR_ID
+					, T1.LAST_MDFCN_DT
+					, T1.MNG_SEQ
+					, T1.LAST_IDNTY_YMD
+				FROM TB_BSC_INFO T1
+				LEFT JOIN (SELECT DISTINCT EXPRT_MNG_NO, EXPRT_LCLSF_CD, EXPRT_MCLSF_CD, EXPRT_SCLSF_CD FROM TB_EXPRT_CLSF) E1 ON T1.EXPRT_MNG_NO = E1.EXPRT_MNG_NO
+				LEFT JOIN (SELECT DISTINCT EXPRT_MNG_NO, EXPRT_LCLSF_CD, EXPRT_MCLSF_CD, EXPRT_SCLSF_CD FROM TB_EXPRT_CLSF) E2 ON T1.EXPRT_MNG_NO = E2.EXPRT_MNG_NO
+				WHERE 1=1
+				<!-- 첫 번째 검색 조건 -->
+		        <isNotNull property="searchInput1"><isNotEmpty property="searchInput1">
+		            <isEqual property="search1" compareValue="all">
+		                AND (
+		                    EXPRT_NM LIKE '%' || #searchInput1# || '%' OR
+		                    BRTH_DT LIKE '%' || #searchInput1# || '%' OR
+		                    OGDP_NM LIKE '%' || #searchInput1# || '%' OR
+		                    JBPS_NM LIKE '%' || #searchInput1# || '%' OR
+		                    MBL_TELNO LIKE '%' || #searchInput1# || '%' OR
+		                    CO_TELNO LIKE '%' || #searchInput1# || '%' OR
+		                    EML_ADDR LIKE '%' || #searchInput1# || '%' OR
+		                    ASST_EML_ADDR LIKE '%' || #searchInput1# || '%' OR
+		                    KYWD_NM LIKE '%' || #searchInput1# || '%' OR
+		                    SRC_NM LIKE '%' || #searchInput1# || '%' OR
+		                    RMRK_CN LIKE '%' || #searchInput1# || '%'
+		                )
+		            </isEqual>
+		            <isEqual property="search1" compareValue="exprtNm">
+		                AND EXPRT_NM LIKE '%' || #searchInput1# || '%'
+		            </isEqual>
+		            <isEqual property="search1" compareValue="brthDt">
+		                AND BRTH_DT LIKE '%' || #searchInput1# || '%'
+		            </isEqual>
+		            <isEqual property="search1" compareValue="ogdpNm">
+		                AND OGDP_NM LIKE '%' || #searchInput1# || '%'
+		            </isEqual>
+		            <isEqual property="search1" compareValue="jbpsNm">
+		                AND JBPS_NM LIKE '%' || #searchInput1# || '%'
+		            </isEqual>
+		            <isEqual property="search1" compareValue="mblTelno">
+		                AND (MBL_TELNO LIKE '%' || #searchInput1# || '%' OR CO_TELNO LIKE '%' || #searchInput1# || '%')
+		            </isEqual>
+		            <isEqual property="search1" compareValue="emlAddr">
+		                AND (EML_ADDR LIKE '%' || #searchInput1# || '%' OR ASST_EML_ADDR LIKE '%' || #searchInput1# || '%')
+		            </isEqual>
+		            <isEqual property="search1" compareValue="kywdNm">
+		                AND KYWD_NM LIKE '%' || #searchInput1# || '%'
+		            </isEqual>
+		            <isEqual property="search1" compareValue="srcNm">
+		                AND SRC_NM LIKE '%' || #searchInput1# || '%'
+		            </isEqual>
+		            <isEqual property="search1" compareValue="rmrkCn">
+		                AND RMRK_CN LIKE '%' || #searchInput1# || '%'
+		            </isEqual>
+		        </isNotEmpty></isNotNull>
+				
+		        <!-- 두 번째 검색 조건 -->
+		        <isNotNull property="searchInput2"><isNotEmpty property="searchInput2">
+		            <isEqual property="search2" compareValue="all">
+		                AND (
+		                    EXPRT_NM LIKE '%' || #searchInput2# || '%' OR
+		                    BRTH_DT LIKE '%' || #searchInput2# || '%' OR
+		                    OGDP_NM LIKE '%' || #searchInput2# || '%' OR
+		                    JBPS_NM LIKE '%' || #searchInput2# || '%' OR
+		                    MBL_TELNO LIKE '%' || #searchInput2# || '%' OR
+		                    CO_TELNO LIKE '%' || #searchInput2# || '%' OR
+		                    EML_ADDR LIKE '%' || #searchInput2# || '%' OR
+		                    ASST_EML_ADDR LIKE '%' || #searchInput2# || '%' OR
+		                    KYWD_NM LIKE '%' || #searchInput2# || '%' OR
+		                    SRC_NM LIKE '%' || #searchInput2# || '%' OR 
+		                    RMRK_CN LIKE '%' || #searchInput2# || '%'
+		                )
+		            </isEqual>
+		            <isEqual property="search2" compareValue="exprtNm">
+		                AND EXPRT_NM LIKE '%' || #searchInput2# || '%'
+		            </isEqual>
+		            <isEqual property="search2" compareValue="brthDt">
+		                AND BRTH_DT LIKE '%' || #searchInput2# || '%'
+		            </isEqual>
+		            <isEqual property="search2" compareValue="ogdpNm">
+		                AND OGDP_NM LIKE '%' || #searchInput2# || '%'
+		            </isEqual>
+		            <isEqual property="search2" compareValue="jbpsNm">
+		                AND JBPS_NM LIKE '%' || #searchInput2# || '%'
+		            </isEqual>
+		            <isEqual property="search2" compareValue="mblTelno">
+		                AND (MBL_TELNO LIKE '%' || #searchInput2# || '%' OR CO_TELNO LIKE '%' || #searchInput2# || '%')
+		            </isEqual>
+		            <isEqual property="search2" compareValue="emlAddr">
+		                AND (EML_ADDR LIKE '%' || #searchInput2# || '%' OR ASST_EML_ADDR LIKE '%' || #searchInput2# || '%')
+		            </isEqual>
+		            <isEqual property="search2" compareValue="kywdNm">
+		                AND KYWD_NM LIKE '%' || #searchInput2# || '%'
+		            </isEqual>
+		            <isEqual property="search2" compareValue="srcNm">
+		                AND SRC_NM LIKE '%' || #searchInput2# || '%'
+		            </isEqual>
+		            <isEqual property="search2" compareValue="rmrkCn">
+		                AND RMRK_CN LIKE '%' || #searchInput2# || '%'
+		            </isEqual>		            
+		        </isNotEmpty></isNotNull>
+				
+		        <!-- 세 번째 검색 조건 -->
+		        <isNotNull property="searchInput3"><isNotEmpty property="searchInput3">
+		            <isEqual property="search3" compareValue="all">
+		                AND (
+		                    EXPRT_NM LIKE '%' || #searchInput3# || '%' OR
+		                    BRTH_DT LIKE '%' || #searchInput3# || '%' OR
+		                    OGDP_NM LIKE '%' || #searchInput3# || '%' OR
+		                    JBPS_NM LIKE '%' || #searchInput3# || '%' OR
+		                    MBL_TELNO LIKE '%' || #searchInput3# || '%' OR
+		                    CO_TELNO LIKE '%' || #searchInput3# || '%' OR
+		                    EML_ADDR LIKE '%' || #searchInput3# || '%' OR
+		                    ASST_EML_ADDR LIKE '%' || #searchInput3# || '%' OR
+		                    KYWD_NM LIKE '%' || #searchInput3# || '%' OR
+		                    SRC_NM LIKE '%' || #searchInput3# || '%' OR
+		                    RMRK_CN LIKE '%' || #searchInput3# || '%'
+		                )
+		            </isEqual>
+		            <isEqual property="search3" compareValue="exprtNm">
+		                AND EXPRT_NM LIKE '%' || #searchInput3# || '%'
+		            </isEqual>
+		            <isEqual property="search3" compareValue="brthDt">
+		                AND BRTH_DT LIKE '%' || #searchInput3# || '%'
+		            </isEqual>
+		            <isEqual property="search3" compareValue="ogdpNm">
+		                AND OGDP_NM LIKE '%' || #searchInput3# || '%'
+		            </isEqual>
+		            <isEqual property="search3" compareValue="jbpsNm">
+		                AND JBPS_NM LIKE '%' || #searchInput3# || '%'
+		            </isEqual>
+		            <isEqual property="search3" compareValue="mblTelno">
+		                AND (MBL_TELNO LIKE '%' || #searchInput3# || '%' OR CO_TELNO LIKE '%' || #searchInput3# || '%')
+		            </isEqual>
+		            <isEqual property="search3" compareValue="emlAddr">
+		                AND (EML_ADDR LIKE '%' || #searchInput3# || '%' OR ASST_EML_ADDR LIKE '%' || #searchInput3# || '%')
+		            </isEqual>
+		            <isEqual property="search3" compareValue="kywdNm">
+		                AND KYWD_NM LIKE '%' || #searchInput3# || '%'
+		            </isEqual>
+		            <isEqual property="search3" compareValue="srcNm">
+		                AND SRC_NM LIKE '%' || #searchInput3# || '%'
+		            </isEqual>
+		            <isEqual property="search3" compareValue="rmrkCn">
+		                AND RMRK_CN LIKE '%' || #searchInput3# || '%'
+		            </isEqual>		            
+		        </isNotEmpty></isNotNull>
+		        
+		        <!-- 신바이오 분류체계 -->
+		        <isNotNull property="largeCategory1"><isNotEmpty property="largeCategory1">
+		        	<isNotEqual property="largeCategory1" compareValue="all">
+		        		AND TRIM(E1.EXPRT_LCLSF_CD) = #largeCategory1#
+		        	</isNotEqual>
+		        </isNotEmpty></isNotNull>
+		        <isNotNull property="mediumCategory1"><isNotEmpty property="mediumCategory1">
+		        	<isNotEqual property="mediumCategory1" compareValue="all">
+		   		     	AND TRIM(E1.EXPRT_MCLSF_CD) = #mediumCategory1#
+		        	</isNotEqual>
+		        </isNotEmpty></isNotNull>
+		        <isNotNull property="smallCategory1"><isNotEmpty property="smallCategory1">
+		        	<isNotEqual property="smallCategory1" compareValue="all">
+		   		     	AND TRIM(E1.EXPRT_SCLSF_CD) = #smallCategory1#
+		        	</isNotEqual>
+		        </isNotEmpty></isNotNull>
+		        <!-- 정책 분류체계 -->
+		        <isNotNull property="largeCategory2"><isNotEmpty property="largeCategory2">
+		        	<isNotEqual property="largeCategory2" compareValue="all">
+		        		<isNotEqual property="largeCategory2" compareValue="all">
+		        			AND TRIM(E2.EXPRT_LCLSF_CD) = #largeCategory2#
+		        		</isNotEqual>
+		        	</isNotEqual>
+		        </isNotEmpty></isNotNull>		        
+		        <isNotNull property="mediumCategory2"><isNotEmpty property="mediumCategory2">
+		        	<isNotEqual property="mediumCategory2" compareValue="all">
+		        		AND TRIM(E2.EXPRT_MCLSF_CD) = #mediumCategory2#
+		        	</isNotEqual>
+		        </isNotEmpty></isNotNull>
+		        <isNotNull property="smallCategory2"><isNotEmpty property="smallCategory2">
+		        	<isNotEqual property="smallCategory2" compareValue="all">
+		    	    	AND TRIM(E2.EXPRT_SCLSF_CD) = #smallCategory2#
+		        	</isNotEqual>
+		        </isNotEmpty></isNotNull>
+
+		        
+			    <!-- 시작일자, 종료일자 둘 다 있을때 -->
+			    <isNotEmpty property="startDate"><isNotEmpty property="endDate">
+				    <isEqual property="dateSearch" compareValue="frstRegDt">
+				        AND FRST_REG_DT <![CDATA[>=]]> TO_DATE(#startDate#, 'YYYY-MM-DD') AND FRST_REG_DT <![CDATA[<]]> TO_DATE(#endDate#, 'YYYY-MM-DD') + INTERVAL '1' DAY
+				    </isEqual>			     
+				    <isEqual property="dateSearch" compareValue="lastMdfcnDt">
+				        AND LAST_MDFCN_DT <![CDATA[>=]]> TO_DATE(#startDate#, 'YYYY-MM-DD') AND LAST_MDFCN_DT <![CDATA[<]]> TO_DATE(#endDate#, 'YYYY-MM-DD') + INTERVAL '1' DAY
+				    </isEqual>
+				</isNotEmpty></isNotEmpty>
+				
+			    <!-- 시작일자만 있을때 -->
+			    <isNotEmpty property="startDate"><isEmpty property="endDate">
+				    <isEqual property="dateSearch" compareValue="frstRegDt">
+				        AND FRST_REG_DT <![CDATA[>=]]> TO_DATE(#startDate#, 'YYYY-MM-DD') AND FRST_REG_DT <![CDATA[<]]> SYSDATE + INTERVAL '1' DAY
+				    </isEqual>			    
+				    <isEqual property="dateSearch" compareValue="lastMdfcnDt">
+				        AND LAST_MDFCN_DT <![CDATA[>=]]> TO_DATE(#startDate#, 'YYYY-MM-DD') AND LAST_MDFCN_DT <![CDATA[<]]> SYSDATE + INTERVAL '1' DAY
+				    </isEqual>
+				</isEmpty></isNotEmpty>
+				
+				<!-- 종료일자만 있을때 -->
+			    <isNotEmpty property="endDate"><isEmpty property="startDate">
+				    <isEqual property="dateSearch" compareValue="frstRegDt">
+				        AND FRST_REG_DT <![CDATA[<]]> TO_DATE(#endDate#, 'YYYY-MM-DD') + INTERVAL '1' DAY
+				    </isEqual>			    
+				    <isEqual property="dateSearch" compareValue="lastMdfcnDt">
+				        AND LAST_MDFCN_DT <![CDATA[<]]> TO_DATE(#endDate#, 'YYYY-MM-DD') + INTERVAL '1' DAY
+				    </isEqual>
+				</isEmpty></isNotEmpty>
+				
+				<isEqual property="overDay" compareValue="over">
+					AND (LAST_IDNTY_YMD <![CDATA[<=]]> ADD_MONTHS(SYSDATE, -6) OR last_idnty_ymd IS NULL)
+				</isEqual>
+				
+				) T2
+			) T1
+			WHERE "ROWNUM" BETWEEN (($cPage$-1)*$intListCnt$)+1 AND ($cPage$*$intListCnt$)
+			ORDER BY LAST_MDFCN_DT DESC, MNG_SEQ DESC, EXPRT_MNG_NO DESC
+	</select>
+	<select id="getExpertExcelList" resultMap="ExpertList" parameterClass="map">
+	/* Expert.getExpertExcelList */
+		SELECT * FROM(
+			SELECT DISTINCT ROW_NUMBER() OVER (ORDER BY MNG_SEQ DESC, EXPRT_MNG_NO DESC) AS "ROWNUM"
+				, T2.EXPRT_MNG_NO
+				, T2.EXPRT_NM
+				, T2.EXPRT_GNDR
+				, T2.BRTH_DT
+				, T2.OGDP_NM
+				, T2.DEPT_NM
+				, T2.JBPS_NM
+				, T2.MBL_TELNO
+				, T2.CO_TELNO
+				, T2.EML_ADDR
+				, T2.ASST_EML_ADDR
+				, T2.KYWD_NM
+				, T2.SRC_NM
+				, T2.RMRK_CN
+				, T2.IMG_FILE_PATH_NM
+				, T2.INQ_CNT
+				, T2.FRST_RGTR_ID
+				, T2.FRST_REG_DT
+				, T2.LAST_MDFR_ID
+				, T2.LAST_MDFCN_DT
+				, T2.MNG_SEQ
+				, T2.LAST_IDNTY_YMD
+			FROM(
+				SELECT DISTINCT T1.EXPRT_MNG_NO
+					, T1.EXPRT_NM
+					, T1.EXPRT_GNDR
+					, T1.BRTH_DT
+					, T1.OGDP_NM
+					, T1.DEPT_NM
+					, T1.JBPS_NM
+					, T1.MBL_TELNO
+					, T1.CO_TELNO
+					, T1.EML_ADDR
+					, T1.ASST_EML_ADDR
+					, T1.KYWD_NM
+					, T1.SRC_NM
+					, T1.RMRK_CN
+					, T1.IMG_FILE_PATH_NM
+					, T1.INQ_CNT
+					, T1.FRST_RGTR_ID
+					, T1.FRST_REG_DT
+					, T1.LAST_MDFR_ID
+					, T1.LAST_MDFCN_DT
+					, T1.MNG_SEQ
+					, T1.LAST_IDNTY_YMD
+				FROM TB_BSC_INFO T1
+				LEFT JOIN (SELECT DISTINCT EXPRT_MNG_NO, EXPRT_LCLSF_CD, EXPRT_MCLSF_CD, EXPRT_SCLSF_CD FROM TB_EXPRT_CLSF) E1 ON T1.EXPRT_MNG_NO = E1.EXPRT_MNG_NO
+				LEFT JOIN (SELECT DISTINCT EXPRT_MNG_NO, EXPRT_LCLSF_CD, EXPRT_MCLSF_CD, EXPRT_SCLSF_CD FROM TB_EXPRT_CLSF) E2 ON T1.EXPRT_MNG_NO = E2.EXPRT_MNG_NO
+				WHERE 1=1
+				<!-- 첫 번째 검색 조건 -->
+		        <isNotNull property="searchInput1"><isNotEmpty property="searchInput1">
+		            <isEqual property="search1" compareValue="all">
+		                AND (
+		                    EXPRT_NM LIKE '%' || #searchInput1# || '%' OR
+		                    BRTH_DT LIKE '%' || #searchInput1# || '%' OR
+		                    OGDP_NM LIKE '%' || #searchInput1# || '%' OR
+		                    JBPS_NM LIKE '%' || #searchInput1# || '%' OR
+		                    MBL_TELNO LIKE '%' || #searchInput1# || '%' OR
+		                    CO_TELNO LIKE '%' || #searchInput1# || '%' OR
+		                    EML_ADDR LIKE '%' || #searchInput1# || '%' OR
+		                    ASST_EML_ADDR LIKE '%' || #searchInput1# || '%' OR
+		                    KYWD_NM LIKE '%' || #searchInput1# || '%' OR
+		                    SRC_NM LIKE '%' || #searchInput1# || '%' OR
+		                    RMRK_CN LIKE '%' || #searchInput1# || '%'
+		                )
+		            </isEqual>
+		            <isEqual property="search1" compareValue="exprtNm">
+		                AND EXPRT_NM LIKE '%' || #searchInput1# || '%'
+		            </isEqual>
+		            <isEqual property="search1" compareValue="brthDt">
+		                AND BRTH_DT LIKE '%' || #searchInput1# || '%'
+		            </isEqual>
+		            <isEqual property="search1" compareValue="ogdpNm">
+		                AND OGDP_NM LIKE '%' || #searchInput1# || '%'
+		            </isEqual>
+		            <isEqual property="search1" compareValue="jbpsNm">
+		                AND JBPS_NM LIKE '%' || #searchInput1# || '%'
+		            </isEqual>
+		            <isEqual property="search1" compareValue="mblTelno">
+		                AND (MBL_TELNO LIKE '%' || #searchInput1# || '%' OR CO_TELNO LIKE '%' || #searchInput1# || '%')
+		            </isEqual>
+		            <isEqual property="search1" compareValue="emlAddr">
+		                AND (EML_ADDR LIKE '%' || #searchInput1# || '%' OR ASST_EML_ADDR LIKE '%' || #searchInput1# || '%')
+		            </isEqual>
+		            <isEqual property="search1" compareValue="kywdNm">
+		                AND KYWD_NM LIKE '%' || #searchInput1# || '%'
+		            </isEqual>
+		            <isEqual property="search1" compareValue="srcNm">
+		                AND SRC_NM LIKE '%' || #searchInput1# || '%'
+		            </isEqual>
+		            <isEqual property="search1" compareValue="rmrkCn">
+		                AND RMRK_CN LIKE '%' || #searchInput1# || '%'
+		            </isEqual>
+		        </isNotEmpty></isNotNull>
+				
+		        <!-- 두 번째 검색 조건 -->
+		        <isNotNull property="searchInput2"><isNotEmpty property="searchInput2">
+		            <isEqual property="search2" compareValue="all">
+		                AND (
+		                    EXPRT_NM LIKE '%' || #searchInput2# || '%' OR
+		                    BRTH_DT LIKE '%' || #searchInput2# || '%' OR
+		                    OGDP_NM LIKE '%' || #searchInput2# || '%' OR
+		                    JBPS_NM LIKE '%' || #searchInput2# || '%' OR
+		                    MBL_TELNO LIKE '%' || #searchInput2# || '%' OR
+		                    CO_TELNO LIKE '%' || #searchInput2# || '%' OR
+		                    EML_ADDR LIKE '%' || #searchInput2# || '%' OR
+		                    ASST_EML_ADDR LIKE '%' || #searchInput2# || '%' OR
+		                    KYWD_NM LIKE '%' || #searchInput2# || '%' OR
+		                    SRC_NM LIKE '%' || #searchInput2# || '%' OR 
+		                    RMRK_CN LIKE '%' || #searchInput2# || '%'
+		                )
+		            </isEqual>
+		            <isEqual property="search2" compareValue="exprtNm">
+		                AND EXPRT_NM LIKE '%' || #searchInput2# || '%'
+		            </isEqual>
+		            <isEqual property="search2" compareValue="brthDt">
+		                AND BRTH_DT LIKE '%' || #searchInput2# || '%'
+		            </isEqual>
+		            <isEqual property="search2" compareValue="ogdpNm">
+		                AND OGDP_NM LIKE '%' || #searchInput2# || '%'
+		            </isEqual>
+		            <isEqual property="search2" compareValue="jbpsNm">
+		                AND JBPS_NM LIKE '%' || #searchInput2# || '%'
+		            </isEqual>
+		            <isEqual property="search2" compareValue="mblTelno">
+		                AND (MBL_TELNO LIKE '%' || #searchInput2# || '%' OR CO_TELNO LIKE '%' || #searchInput2# || '%')
+		            </isEqual>
+		            <isEqual property="search2" compareValue="emlAddr">
+		                AND (EML_ADDR LIKE '%' || #searchInput2# || '%' OR ASST_EML_ADDR LIKE '%' || #searchInput2# || '%')
+		            </isEqual>
+		            <isEqual property="search2" compareValue="kywdNm">
+		                AND KYWD_NM LIKE '%' || #searchInput2# || '%'
+		            </isEqual>
+		            <isEqual property="search2" compareValue="srcNm">
+		                AND SRC_NM LIKE '%' || #searchInput2# || '%'
+		            </isEqual>
+		            <isEqual property="search2" compareValue="rmrkCn">
+		                AND RMRK_CN LIKE '%' || #searchInput2# || '%'
+		            </isEqual>		            
+		        </isNotEmpty></isNotNull>
+				
+		        <!-- 세 번째 검색 조건 -->
+		        <isNotNull property="searchInput3"><isNotEmpty property="searchInput3">
+		            <isEqual property="search3" compareValue="all">
+		                AND (
+		                    EXPRT_NM LIKE '%' || #searchInput3# || '%' OR
+		                    BRTH_DT LIKE '%' || #searchInput3# || '%' OR
+		                    OGDP_NM LIKE '%' || #searchInput3# || '%' OR
+		                    JBPS_NM LIKE '%' || #searchInput3# || '%' OR
+		                    MBL_TELNO LIKE '%' || #searchInput3# || '%' OR
+		                    CO_TELNO LIKE '%' || #searchInput3# || '%' OR
+		                    EML_ADDR LIKE '%' || #searchInput3# || '%' OR
+		                    ASST_EML_ADDR LIKE '%' || #searchInput3# || '%' OR
+		                    KYWD_NM LIKE '%' || #searchInput3# || '%' OR
+		                    SRC_NM LIKE '%' || #searchInput3# || '%' OR
+		                    RMRK_CN LIKE '%' || #searchInput3# || '%'
+		                )
+		            </isEqual>
+		            <isEqual property="search3" compareValue="exprtNm">
+		                AND EXPRT_NM LIKE '%' || #searchInput3# || '%'
+		            </isEqual>
+		            <isEqual property="search3" compareValue="brthDt">
+		                AND BRTH_DT LIKE '%' || #searchInput3# || '%'
+		            </isEqual>
+		            <isEqual property="search3" compareValue="ogdpNm">
+		                AND OGDP_NM LIKE '%' || #searchInput3# || '%'
+		            </isEqual>
+		            <isEqual property="search3" compareValue="jbpsNm">
+		                AND JBPS_NM LIKE '%' || #searchInput3# || '%'
+		            </isEqual>
+		            <isEqual property="search3" compareValue="mblTelno">
+		                AND (MBL_TELNO LIKE '%' || #searchInput3# || '%' OR CO_TELNO LIKE '%' || #searchInput3# || '%')
+		            </isEqual>
+		            <isEqual property="search3" compareValue="emlAddr">
+		                AND (EML_ADDR LIKE '%' || #searchInput3# || '%' OR ASST_EML_ADDR LIKE '%' || #searchInput3# || '%')
+		            </isEqual>
+		            <isEqual property="search3" compareValue="kywdNm">
+		                AND KYWD_NM LIKE '%' || #searchInput3# || '%'
+		            </isEqual>
+		            <isEqual property="search3" compareValue="srcNm">
+		                AND SRC_NM LIKE '%' || #searchInput3# || '%'
+		            </isEqual>
+		            <isEqual property="search3" compareValue="rmrkCn">
+		                AND RMRK_CN LIKE '%' || #searchInput3# || '%'
+		            </isEqual>		            
+		        </isNotEmpty></isNotNull>
+		        
+		        <!-- 신바이오 분류체계 -->
+		        <isNotNull property="largeCategory1"><isNotEmpty property="largeCategory1">
+		        	<isNotEqual property="largeCategory1" compareValue="all">
+		        		AND TRIM(E1.EXPRT_LCLSF_CD) = #largeCategory1#
+		        	</isNotEqual>
+		        </isNotEmpty></isNotNull>
+		        <isNotNull property="mediumCategory1"><isNotEmpty property="mediumCategory1">
+		        	<isNotEqual property="mediumCategory1" compareValue="all">
+		   		     	AND TRIM(E1.EXPRT_MCLSF_CD) = #mediumCategory1#
+		        	</isNotEqual>
+		        </isNotEmpty></isNotNull>
+		        <isNotNull property="smallCategory1"><isNotEmpty property="smallCategory1">
+		        	<isNotEqual property="smallCategory1" compareValue="all">
+		   		     	AND TRIM(E1.EXPRT_SCLSF_CD) = #smallCategory1#
+		        	</isNotEqual>
+		        </isNotEmpty></isNotNull>
+		        <!-- 정책 분류체계 -->
+		        <isNotNull property="largeCategory2"><isNotEmpty property="largeCategory2">
+		        	<isNotEqual property="largeCategory2" compareValue="all">
+		        		<isNotEqual property="largeCategory2" compareValue="all">
+		        			AND TRIM(E2.EXPRT_LCLSF_CD) = #largeCategory2#
+		        		</isNotEqual>
+		        	</isNotEqual>
+		        </isNotEmpty></isNotNull>		        
+		        <isNotNull property="mediumCategory2"><isNotEmpty property="mediumCategory2">
+		        	<isNotEqual property="mediumCategory2" compareValue="all">
+		        		AND TRIM(E2.EXPRT_MCLSF_CD) = #mediumCategory2#
+		        	</isNotEqual>
+		        </isNotEmpty></isNotNull>
+		        <isNotNull property="smallCategory2"><isNotEmpty property="smallCategory2">
+		        	<isNotEqual property="smallCategory2" compareValue="all">
+		    	    	AND TRIM(E2.EXPRT_SCLSF_CD) = #smallCategory2#
+		        	</isNotEqual>
+		        </isNotEmpty></isNotNull>
+
+		        
+			    <!-- 시작일자, 종료일자 둘 다 있을때 -->
+			    <isNotEmpty property="startDate"><isNotEmpty property="endDate">
+				    <isEqual property="dateSearch" compareValue="frstRegDt">
+				        AND FRST_REG_DT <![CDATA[>=]]> TO_DATE(#startDate#, 'YYYY-MM-DD') AND FRST_REG_DT <![CDATA[<]]> TO_DATE(#endDate#, 'YYYY-MM-DD') + INTERVAL '1' DAY
+				    </isEqual>			     
+				    <isEqual property="dateSearch" compareValue="lastMdfcnDt">
+				        AND LAST_MDFCN_DT <![CDATA[>=]]> TO_DATE(#startDate#, 'YYYY-MM-DD') AND LAST_MDFCN_DT <![CDATA[<]]> TO_DATE(#endDate#, 'YYYY-MM-DD') + INTERVAL '1' DAY
+				    </isEqual>
+				</isNotEmpty></isNotEmpty>
+				
+			    <!-- 시작일자만 있을때 -->
+			    <isNotEmpty property="startDate"><isEmpty property="endDate">
+				    <isEqual property="dateSearch" compareValue="frstRegDt">
+				        AND FRST_REG_DT <![CDATA[>=]]> TO_DATE(#startDate#, 'YYYY-MM-DD') AND FRST_REG_DT <![CDATA[<]]> SYSDATE + INTERVAL '1' DAY
+				    </isEqual>			    
+				    <isEqual property="dateSearch" compareValue="lastMdfcnDt">
+				        AND LAST_MDFCN_DT <![CDATA[>=]]> TO_DATE(#startDate#, 'YYYY-MM-DD') AND LAST_MDFCN_DT <![CDATA[<]]> SYSDATE + INTERVAL '1' DAY
+				    </isEqual>
+				</isEmpty></isNotEmpty>
+				
+				<!-- 종료일자만 있을때 -->
+			    <isNotEmpty property="endDate"><isEmpty property="startDate">
+				    <isEqual property="dateSearch" compareValue="frstRegDt">
+				        AND FRST_REG_DT <![CDATA[<]]> TO_DATE(#endDate#, 'YYYY-MM-DD') + INTERVAL '1' DAY
+				    </isEqual>			    
+				    <isEqual property="dateSearch" compareValue="lastMdfcnDt">
+				        AND LAST_MDFCN_DT <![CDATA[<]]> TO_DATE(#endDate#, 'YYYY-MM-DD') + INTERVAL '1' DAY
+				    </isEqual>
+				</isEmpty></isNotEmpty>
+				
+				<isEqual property="overDay" compareValue="over">
+					AND (LAST_IDNTY_YMD <![CDATA[<=]]> ADD_MONTHS(SYSDATE, -6) OR LAST_IDNTY_YMD IS NULL)
+				</isEqual>
+				
+				) T2
+			) T1
+			ORDER BY  MNG_SEQ DESC, EXPRT_MNG_NO DESC
+	</select>	
+	
+	<select id="getExpertListCnt" resultClass="int" parameterClass="map">
+	/* Expert.getExpertListCnt */	
+		SELECT COUNT(DISTINCT T1.EXPRT_MNG_NO) FROM TB_BSC_INFO T1
+				LEFT JOIN (SELECT DISTINCT EXPRT_MNG_NO, EXPRT_LCLSF_CD, EXPRT_MCLSF_CD, EXPRT_SCLSF_CD FROM TB_EXPRT_CLSF) E1 ON T1.EXPRT_MNG_NO = E1.EXPRT_MNG_NO
+				LEFT JOIN (SELECT DISTINCT EXPRT_MNG_NO, EXPRT_LCLSF_CD, EXPRT_MCLSF_CD, EXPRT_SCLSF_CD FROM TB_EXPRT_CLSF) E2 ON T1.EXPRT_MNG_NO = E2.EXPRT_MNG_NO
+				WHERE 1=1
+				<!-- 첫 번째 검색 조건 -->
+		        <isNotNull property="searchInput1">
+		            <isEqual property="search1" compareValue="all">
+		                AND (
+		                    EXPRT_NM LIKE '%' || #searchInput1# || '%' OR
+		                    BRTH_DT LIKE '%' || #searchInput1# || '%' OR
+		                    OGDP_NM LIKE '%' || #searchInput1# || '%' OR
+		                    JBPS_NM LIKE '%' || #searchInput1# || '%' OR
+		                    MBL_TELNO LIKE '%' || #searchInput1# || '%' OR
+		                    CO_TELNO LIKE '%' || #searchInput1# || '%' OR
+		                    EML_ADDR LIKE '%' || #searchInput1# || '%' OR
+		                    ASST_EML_ADDR LIKE '%' || #searchInput1# || '%' OR
+		                    KYWD_NM LIKE '%' || #searchInput1# || '%' OR
+		                    SRC_NM LIKE '%' || #searchInput1# || '%' OR 
+		                    RMRK_CN LIKE '%' || #searchInput1# || '%'
+		                )
+		            </isEqual>
+		            <isEqual property="search1" compareValue="exprtNm">
+		                AND EXPRT_NM LIKE '%' || #searchInput1# || '%'
+		            </isEqual>
+		            <isEqual property="search1" compareValue="brthDt">
+		                AND BRTH_DT LIKE '%' || #searchInput1# || '%'
+		            </isEqual>
+		            <isEqual property="search1" compareValue="ogdpNm">
+		                AND OGDP_NM LIKE '%' || #searchInput1# || '%'
+		            </isEqual>
+		            <isEqual property="search1" compareValue="jbpsNm">
+		                AND JBPS_NM LIKE '%' || #searchInput1# || '%'
+		            </isEqual>
+		            <isEqual property="search1" compareValue="mblTelno">
+		                AND (MBL_TELNO LIKE '%' || #searchInput1# || '%' OR CO_TELNO LIKE '%' || #searchInput1# || '%')
+		            </isEqual>
+		            <isEqual property="search1" compareValue="emlAddr">
+		                AND (EML_ADDR LIKE '%' || #searchInput1# || '%' OR ASST_EML_ADDR LIKE '%' || #searchInput1# || '%')
+		            </isEqual>
+		            <isEqual property="search1" compareValue="kywdNm">
+		                AND KYWD_NM LIKE '%' || #searchInput1# || '%'
+		            </isEqual>
+		            <isEqual property="search1" compareValue="srcNm">
+		                AND SRC_NM LIKE '%' || #searchInput1# || '%'
+		            </isEqual>
+		            <isEqual property="search1" compareValue="rmrkCn">
+		                AND RMRK_CN LIKE '%' || #searchInput1# || '%'
+		            </isEqual>		            
+		        </isNotNull>
+				
+		        <!-- 두 번째 검색 조건 -->
+		        <isNotNull property="searchInput2">
+		            <isEqual property="search2" compareValue="all">
+		                AND (
+		                    EXPRT_NM LIKE '%' || #searchInput2# || '%' OR
+		                    BRTH_DT LIKE '%' || #searchInput2# || '%' OR
+		                    OGDP_NM LIKE '%' || #searchInput2# || '%' OR
+		                    JBPS_NM LIKE '%' || #searchInput2# || '%' OR
+		                    MBL_TELNO LIKE '%' || #searchInput2# || '%' OR
+		                    CO_TELNO LIKE '%' || #searchInput2# || '%' OR
+		                    EML_ADDR LIKE '%' || #searchInput2# || '%' OR
+		                    ASST_EML_ADDR LIKE '%' || #searchInput2# || '%' OR
+		                    KYWD_NM LIKE '%' || #searchInput2# || '%' OR
+		                    SRC_NM LIKE '%' || #searchInput2# || '%' OR
+		                    RMRK_CN LIKE '%' || #searchInput2# || '%'
+		                )
+		            </isEqual>
+		            <isEqual property="search2" compareValue="exprtNm">
+		                AND EXPRT_NM LIKE '%' || #searchInput2# || '%'
+		            </isEqual>
+		            <isEqual property="search2" compareValue="brthDt">
+		                AND BRTH_DT LIKE '%' || #searchInput2# || '%'
+		            </isEqual>
+		            <isEqual property="search2" compareValue="ogdpNm">
+		                AND OGDP_NM LIKE '%' || #searchInput2# || '%'
+		            </isEqual>
+		            <isEqual property="search2" compareValue="jbpsNm">
+		                AND JBPS_NM LIKE '%' || #searchInput2# || '%'
+		            </isEqual>
+		            <isEqual property="search2" compareValue="mblTelno">
+		                AND (MBL_TELNO LIKE '%' || #searchInput2# || '%' OR CO_TELNO LIKE '%' || #searchInput2# || '%')
+		            </isEqual>
+		            <isEqual property="search2" compareValue="emlAddr">
+		                AND (EML_ADDR LIKE '%' || #searchInput2# || '%' OR ASST_EML_ADDR LIKE '%' || #searchInput2# || '%')
+		            </isEqual>
+		            <isEqual property="search2" compareValue="kywdNm">
+		                AND KYWD_NM LIKE '%' || #searchInput2# || '%'
+		            </isEqual>
+		            <isEqual property="search2" compareValue="srcNm">
+		                AND SRC_NM LIKE '%' || #searchInput2# || '%'
+		            </isEqual>
+		            <isEqual property="search2" compareValue="rmrkCn">
+		                AND RMRK_CN LIKE '%' || #searchInput2# || '%'
+		            </isEqual>		            
+		        </isNotNull>
+				
+		        <!-- 세 번째 검색 조건 -->
+		        <isNotNull property="searchInput3">
+		            <isEqual property="search3" compareValue="all">
+		                AND (
+		                    EXPRT_NM LIKE '%' || #searchInput3# || '%' OR
+		                    BRTH_DT LIKE '%' || #searchInput3# || '%' OR
+		                    OGDP_NM LIKE '%' || #searchInput3# || '%' OR
+		                    JBPS_NM LIKE '%' || #searchInput3# || '%' OR
+		                    MBL_TELNO LIKE '%' || #searchInput3# || '%' OR
+		                    CO_TELNO LIKE '%' || #searchInput3# || '%' OR
+		                    EML_ADDR LIKE '%' || #searchInput3# || '%' OR
+		                    ASST_EML_ADDR LIKE '%' || #searchInput3# || '%' OR
+		                    KYWD_NM LIKE '%' || #searchInput3# || '%' OR
+		                    SRC_NM LIKE '%' || #searchInput3# || '%' OR 
+		                    RMRK_CN LIKE '%' || #searchInput3# || '%'
+		                )
+		            </isEqual>
+		            <isEqual property="search3" compareValue="exprtNm">
+		                AND EXPRT_NM LIKE '%' || #searchInput3# || '%'
+		            </isEqual>
+		            <isEqual property="search3" compareValue="brthDt">
+		                AND BRTH_DT LIKE '%' || #searchInput3# || '%'
+		            </isEqual>
+		            <isEqual property="search3" compareValue="ogdpNm">
+		                AND OGDP_NM LIKE '%' || #searchInput3# || '%'
+		            </isEqual>
+		            <isEqual property="search3" compareValue="jbpsNm">
+		                AND JBPS_NM LIKE '%' || #searchInput3# || '%'
+		            </isEqual>
+		            <isEqual property="search3" compareValue="mblTelno">
+		                AND (MBL_TELNO LIKE '%' || #searchInput3# || '%' OR CO_TELNO LIKE '%' || #searchInput3# || '%')
+		            </isEqual>
+		            <isEqual property="search3" compareValue="emlAddr">
+		                AND (EML_ADDR LIKE '%' || #searchInput3# || '%' OR ASST_EML_ADDR LIKE '%' || #searchInput3# || '%')
+		            </isEqual>
+		            <isEqual property="search3" compareValue="kywdNm">
+		                AND KYWD_NM LIKE '%' || #searchInput3# || '%'
+		            </isEqual>
+		            <isEqual property="search3" compareValue="srcNm">
+		                AND SRC_NM LIKE '%' || #searchInput3# || '%'
+		            </isEqual>
+		            <isEqual property="search3" compareValue="rmrkCn">
+		                AND RMRK_CN LIKE '%' || #searchInput3# || '%'
+		            </isEqual>		            
+		        </isNotNull>
+		        
+		        <!-- 신바이오 분류체계 -->
+		        <isNotNull property="largeCategory1"><isNotEmpty property="largeCategory1">
+		        	<isNotEqual property="largeCategory1" compareValue="all">
+		        		AND TRIM(E1.EXPRT_LCLSF_CD) = #largeCategory1#
+		        	</isNotEqual>
+		        </isNotEmpty></isNotNull>
+		        <isNotNull property="mediumCategory1"><isNotEmpty property="mediumCategory1">
+		        	<isNotEqual property="mediumCategory1" compareValue="all">
+		        		AND TRIM(E1.EXPRT_MCLSF_CD) = #mediumCategory1#
+		        	</isNotEqual>
+		        </isNotEmpty></isNotNull>
+		        <isNotNull property="smallCategory1"><isNotEmpty property="smallCategory1">
+		        	<isNotEqual property="smallCategory1" compareValue="all">
+		        		AND TRIM(E1.EXPRT_SCLSF_CD) = #smallCategory1#
+		        	</isNotEqual>
+		        </isNotEmpty></isNotNull>
+		        <!-- 정책 분류체계 -->
+		        <isNotNull property="largeCategory2"><isNotEmpty property="largeCategory2">
+		        	<isNotEqual property="largeCategory2" compareValue="all">
+		        		AND TRIM(E2.EXPRT_LCLSF_CD) = #largeCategory2#
+		        	</isNotEqual>
+		        </isNotEmpty></isNotNull>		        
+		        <isNotNull property="mediumCategory2"><isNotEmpty property="mediumCategory2">
+		        	<isNotEqual property="mediumCategory2" compareValue="all">
+		        		AND TRIM(E2.EXPRT_MCLSF_CD) = #mediumCategory2#
+		        	</isNotEqual>
+		        </isNotEmpty></isNotNull>
+		        <isNotNull property="smallCategory2"><isNotEmpty property="smallCategory2">
+		        	<isNotEqual property="smallCategory2" compareValue="all">
+		        		AND TRIM(E2.EXPRT_SCLSF_CD) = #smallCategory2#
+		        	</isNotEqual>
+		        </isNotEmpty></isNotNull>		        
+		        
+			    <!-- 시작일자, 종료일자 둘 다 있을때 -->
+			    <isNotEmpty property="startDate"><isNotEmpty property="endDate">
+				    <isEqual property="dateSearch" compareValue="frstRegDt">
+				        AND FRST_REG_DT <![CDATA[>=]]> TO_DATE(#startDate#, 'YYYY-MM-DD') AND FRST_REG_DT <![CDATA[<]]> TO_DATE(#endDate#, 'YYYY-MM-DD') + INTERVAL '1' DAY
+				    </isEqual>			     
+				    <isEqual property="dateSearch" compareValue="lastMdfcnDt">
+				        AND LAST_MDFCN_DT <![CDATA[>=]]> TO_DATE(#startDate#, 'YYYY-MM-DD') AND LAST_MDFCN_DT <![CDATA[<]]> TO_DATE(#endDate#, 'YYYY-MM-DD') + INTERVAL '1' DAY
+				    </isEqual>
+				</isNotEmpty></isNotEmpty>
+				
+			    <!-- 시작일자만 있을때 -->
+			    <isNotEmpty property="startDate"><isEmpty property="endDate">
+				    <isEqual property="dateSearch" compareValue="frstRegDt">
+				        AND FRST_REG_DT <![CDATA[>=]]> TO_DATE(#startDate#, 'YYYY-MM-DD') AND FRST_REG_DT <![CDATA[<]]> SYSDATE + INTERVAL '1' DAY
+				    </isEqual>			    
+				    <isEqual property="dateSearch" compareValue="lastMdfcnDt">
+				        AND LAST_MDFCN_DT <![CDATA[>=]]> TO_DATE(#startDate#, 'YYYY-MM-DD') AND LAST_MDFCN_DT <![CDATA[<]]> SYSDATE + INTERVAL '1' DAY
+				    </isEqual>
+				</isEmpty></isNotEmpty>
+				
+				<!-- 종료일자만 있을때 -->
+			    <isNotEmpty property="endDate"><isEmpty property="startDate">
+				    <isEqual property="dateSearch" compareValue="frstRegDt">
+				        AND FRST_REG_DT <![CDATA[<]]> TO_DATE(#endDate#, 'YYYY-MM-DD') + INTERVAL '1' DAY
+				    </isEqual>			    
+				    <isEqual property="dateSearch" compareValue="lastMdfcnDt">
+				        AND LAST_MDFCN_DT <![CDATA[<]]> TO_DATE(#endDate#, 'YYYY-MM-DD') + INTERVAL '1' DAY
+				    </isEqual>
+				</isEmpty></isNotEmpty>
+				
+				<isEqual property="overDay" compareValue="over">
+					AND (LAST_IDNTY_YMD <![CDATA[<=]]> ADD_MONTHS(SYSDATE, -6) OR LAST_IDNTY_YMD IS NULL)
+				</isEqual>				
+				
+	</select>	
+	
+	<select id="getExpertFullCnt" resultClass="int" parameterClass="map">
+	/* Expert.getExpertFullCnt */	
+		SELECT COUNT(*) FROM TB_BSC_INFO
+	</select>		
+	
+<!-- 	<select id="getAuthDetail" resultMap="ExpertList" parameterClass="map"> -->
+<!-- 	/* Expert.getAuthDetail */ -->
+
+<!-- 	</select>	 -->
+
+	<!-- 전문가 기본정보 -->	
+	<select id="getExpertDetail" resultClass="hmap" parameterClass="map">
+	/* Expert.getExpertDetail */	
+		SELECT EXPRT_MNG_NO
+			, EXPRT_NM
+			, EXPRT_GNDR
+			, SUBSTR(BRTH_DT, 1, 4) AS BRTH_DT
+			, OGDP_NM
+			, DEPT_NM
+			, JBPS_NM
+			, MBL_TELNO
+			, CO_TELNO
+			, EML_ADDR
+			, ASST_EML_ADDR
+			, KYWD_NM
+			, SRC_NM
+			, RMRK_CN
+			, IMG_FILE_PATH_NM
+			, INQ_CNT
+			, FRST_RGTR_ID
+			, FRST_REG_DT
+			, LAST_MDFR_ID
+			, LAST_MDFCN_DT
+			, B.HNAME AS LAST_MDFR_NM
+			, MNG_SEQ
+			, LAST_IDFR_ID
+            , LAST_IDNTY_YMD
+            , C.HNAME AS LAST_IDFR_NM
+            , TRUNC(SYSDATE) - TRUNC(LAST_IDNTY_YMD) AS PASS_DAY
+            , DEPT_NM
+		FROM TB_BSC_INFO A
+			, BIOZINE.UNITY_MEMBER B
+			, BIOZINE.UNITY_MEMBER C
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+		   AND A.LAST_MDFR_ID = B.USERID(+) 
+		   AND A.LAST_IDFR_ID = C.USERID(+) 
+	</select>	
+	
+	<!-- 전문가 최근활동 목록 -->	
+	<select id="getRcntActyList" resultClass="hmap" parameterClass="map">
+	/* Expert.getRcntActyList */	
+		SELECT EXPRT_RCNT_ACTV_MNG_NO
+			, EXPRT_MNG_NO
+			, RCNT_ACTV_OGDP_NM
+			, RCNT_ACTV_JBTTL_NM
+			, RCNT_ACTV_BGNG_YR
+			, RCNT_ACTV_END_YR
+		FROM TB_EXPRT_RCNT_ACTY
+		WHERE EXPRT_MNG_NO = #exprt_mng_no# 
+		ORDER BY RCNT_ACTV_END_YR DESC NULLS LAST  , RCNT_ACTV_BGNG_YR DESC NULLS LAST 
+	</select>
+	
+	<!-- 전문가 학력사항 목록 -->	
+	<select id="getAcbgList" resultClass="hmap" parameterClass="map">
+	/* Expert.getAcbgList */	
+		SELECT EXPRT_ACBG_MNG_NO
+			, EXPRT_MNG_NO
+			, ACBG_SCHL_NM
+			, TRIM(ACBG_SE_NM) AS ACBG_SE_NM
+			, ACBG_MJR_NM
+            , ACBG_GRDTN_YR
+			, TEMP_FILED
+		FROM TB_EXPRT_ACBG
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+		ORDER BY ACBG_GRDTN_YR DESC NULLS LAST
+	</select>
+	
+	<!-- 전문가 경력사항 목록-->	
+	<select id="getCrrList" resultClass="hmap" parameterClass="map">
+	/* Expert.getCrrList */	
+		SELECT EXPRT_CRR_MNG_NO
+			, EXPRT_MNG_NO
+			, CRR_OGDP_NM
+			, CRR_JBTTL_NM
+			, CRR_BGNG_YR
+			, CRR_END_YR
+		FROM TB_EXPRT_CRR
+		WHERE EXPRT_MNG_NO = #exprt_mng_no# 
+		ORDER BY CRR_BGNG_YR DESC NULLS LAST
+	</select>
+	
+	<!-- 전문가  정책분류 목록-->	
+	<select id="getPlcyClsfList" resultClass="hmap" parameterClass="map">
+	/* Expert.getPlcyClsfList */	
+		SELECT A.EXPRT_NEWBIO_MNG_NO
+			, A.EXPRT_MNG_NO
+			, A.CLSF_CD_TYPE
+			, TRIM(A.EXPRT_LCLSF_CD) AS EXPRT_LCLSF_CD
+		    , TRIM(A.EXPRT_MCLSF_CD) AS EXPRT_MCLSF_CD
+		    , TRIM(A.EXPRT_SCLSF_CD) AS EXPRT_SCLSF_CD
+			, (SELECT CL_CODE_NM FROM COMTCCMMNCLCODE WHERE CL_CODE = TRIM(A.EXPRT_LCLSF_CD)) AS LCLSF_NM
+    		, (SELECT CODE_ID_NM FROM COMTCCMMNCODE WHERE CODE_ID = TRIM(A.EXPRT_MCLSF_CD)) AS MCLSF_NM
+    		, (SELECT CODE_NM FROM COMTCCMMNDETAILCODE WHERE CODE = TRIM(A.EXPRT_SCLSF_CD)) AS SCLSF_NM	
+		FROM TB_EXPRT_CLSF A
+		WHERE 1=1
+			AND CLSF_CD_TYPE = '02'
+			AND EXPRT_MNG_NO = #exprt_mng_no# 
+		ORDER BY EXPRT_NEWBIO_MNG_NO
+	</select>
+	
+	<!-- 전문가 신바이오 분류  목록-->	
+	<select id="getBioClsfList" resultClass="hmap" parameterClass="map">
+	/* Expert.getBioClsfList */	
+		SELECT
+   		DISTINCT A.EXPRT_NEWBIO_MNG_NO
+		    , A.EXPRT_MNG_NO
+		    , A.CLSF_CD_TYPE
+		    , TRIM(A.EXPRT_LCLSF_CD) AS EXPRT_LCLSF_CD
+		    , TRIM(A.EXPRT_MCLSF_CD) AS EXPRT_MCLSF_CD
+		    , TRIM(A.EXPRT_SCLSF_CD) AS EXPRT_SCLSF_CD
+		    , (SELECT CL_CODE_NM FROM BIOZINE.COMTCCMMNCLCODE WHERE CL_CODE = TRIM(A.EXPRT_LCLSF_CD)) AS LCLSF_NM
+    		, (SELECT CODE_ID_NM FROM BIOZINE.COMTCCMMNCODE WHERE CODE_ID = TRIM(A.EXPRT_MCLSF_CD)) AS MCLSF_NM
+    		, (SELECT CODE_NM FROM BIOZINE.COMTCCMMNDETAILCODE WHERE CODE = TRIM(A.EXPRT_SCLSF_CD)) AS SCLSF_NM
+		FROM
+		    TB_EXPRT_CLSF A
+		WHERE 1=1
+			AND A.EXPRT_MNG_NO = #exprt_mng_no# 
+			AND A.CLSF_CD_TYPE = 01
+		ORDER BY EXPRT_NEWBIO_MNG_NO
+	</select>
+	
+	<!-- 전문가  수상내역 목록-->	
+	<select id="getWnawdList" resultClass="hmap" parameterClass="map">
+	/* Expert.getWnawdList */	
+		SELECT EXPRT_WNAWD_DSCTN_MNG_NO
+			, EXPRT_MNG_NO
+			, WNAWD_DSCTN
+			, WNAWD_YR
+		FROM TB_EXPRT_WNAWD
+		WHERE EXPRT_MNG_NO = #exprt_mng_no# 
+		ORDER BY WNAWD_YR DESC NULLS LAST
+	</select>
+	
+	<!--   센터 활용실적 내역 -->	
+	<select id="getExprtUtlzDsctnList" resultClass="hmap" parameterClass="map">
+	/* Expert.getExprtUtlzDsctnList */	
+		SELECT EXPRT_UTLZ_DSCTN_MNG_NO
+			, EXPRT_MNG_NO
+			, TO_CHAR(UTLZ_YMD,'YYYY-MM-DD') AS UTLZ_YMD
+			, UTLZ_PRPS
+			, UTLZ_RMRK_CN
+			, INFO_EXPRTUSER
+		FROM TB_EXPRT_UTLZ_DSCTN 
+		WHERE EXPRT_MNG_NO = #exprt_mng_no# 
+		ORDER BY UTLZ_YMD DESC NULLS LAST
+	</select>
+	
+	<!-- 전문가정보 담당자확인 -->	
+	<update id="updateLastIndty" parameterClass="map">
+	/* Expert.updateLastIndty */
+		UPDATE TB_BSC_INFO SET 
+			LAST_IDFR_ID = #loginid#
+		    , LAST_IDNTY_YMD = SYSDATE		
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+	</update>
+	
+	<!-- 전문가 기본정보 수정  -->
+	<update id="updateExprtBscInfo" parameterClass="map">
+	/*Expert.updateExprtBscInfo*/
+		UPDATE TB_BSC_INFO SET 
+			 EXPRT_NM=#exprt_nm#
+			, EXPRT_GNDR=#exprt_gndr#
+			, BRTH_DT=#brth_dt#
+			, OGDP_NM=#ogdp_nm#
+			, DEPT_NM=#dept_nm#
+			, JBPS_NM=#jbps_nm#
+			, MBL_TELNO=#mbl_telno#
+			, CO_TELNO=#co_telno#
+			, EML_ADDR=#eml_addr#
+			, ASST_EML_ADDR=#asst_eml_addr#
+			, KYWD_NM=#kywd_nm#
+			, SRC_NM=#src_nm#
+			, RMRK_CN=#rmrk_cn#
+			<isNotEmpty property="img_file_path_nm">
+			, IMG_FILE_PATH_NM=#img_file_path_nm#
+			</isNotEmpty>
+			, LAST_MDFR_ID=#last_mdfr_id#
+			, LAST_MDFCN_DT= SYSDATE
+		WHERE
+			EXPRT_MNG_NO = #exprt_mng_no#
+	</update>
+	
+	<!-- 전문가 최근활동 삭제-->
+	<delete id="deleteExprtRcntActv" parameterClass="map">
+	/*Expert.deleteExprtRcntActv*/
+		DELETE TB_EXPRT_RCNT_ACTY
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+	</delete>
+	
+	<!-- 전문가  학력사항 삭제-->
+	<delete id="deleteExprtAcbg" parameterClass="map">
+	/*Expert.deleteExprtAcbg*/
+		DELETE TB_EXPRT_ACBG
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+	</delete>
+	
+	<!-- 전문가 경력사항 삭제-->
+	<delete id="deleteExprtCrr" parameterClass="map">
+	/*Expert.deleteExprtCrr*/
+		DELETE TB_EXPRT_CRR
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+			
+	</delete>
+	
+	<!-- 전문가  신바이오분류코드 삭제-->
+	<delete id="deleteExprtBioClsf" parameterClass="map">
+	/*Expert.deleteExprtBioClsf*/
+		DELETE TB_EXPRT_CLSF
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+			AND CLSF_CD_TYPE = '01'
+	</delete>
+	
+	<!-- 전문가  정책분류코드 삭제-->
+	<delete id="deleteExprtPlcyClsf" parameterClass="map">
+	/*Expert.deleteExprtPlcyClsf*/
+		DELETE TB_EXPRT_CLSF
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+			AND CLSF_CD_TYPE = '02'
+	</delete>
+	
+	<!-- 전문가 수상내역 삭제-->
+	<delete id="deleteExprtWnawd" parameterClass="map">
+	/*Expert.deleteExprtWnawd*/
+		DELETE TB_EXPRT_WNAWD
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+	</delete>
+	
+	<!-- 전문가 센터 활용실적 삭제-->
+	<delete id="deleteExprtUtlzDsctn" parameterClass="map">
+	/*Expert.deleteExprtUtlzDsctn*/
+		DELETE TB_EXPRT_UTLZ_DSCTN
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+	</delete>
+	
+	<!-- 전문가 기본정보  삭제-->
+	<delete id="deleteBscInfo" parameterClass="map">
+	/*Expert.deleteBscInfo*/
+		DELETE TB_BSC_INFO
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+	</delete>
+		
+	<!-- 전문가 최근활동 등록 -->
+	<insert id="insertExprtRcntActy" parameterClass="map">
+	/*Expert.insertExprtRcntActy*/
+	<selectKey type="pre" keyProperty="exprt_rcnt_actv_mng_no" resultClass="int">
+		SELECT SEQ_TB_EXPRT_RCNT_ACTY.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO TB_EXPRT_RCNT_ACTY
+		(EXPRT_RCNT_ACTV_MNG_NO
+		, EXPRT_MNG_NO
+		, RCNT_ACTV_OGDP_NM
+		, RCNT_ACTV_JBTTL_NM
+		, RCNT_ACTV_BGNG_YR
+		, RCNT_ACTV_END_YR
+		)
+		VALUES
+		(#exprt_rcnt_actv_mng_no#
+		, #exprt_mng_no#
+		, #rcnt_actv_ogdp_nm#
+		, #rcnt_actv_jbttl_nm#
+		, #rcnt_actv_bgng_yr#
+		, #rcnt_actv_end_yr#
+		)
+	</insert>
+	
+	<!-- 전문가 학력사항 등록 -->
+	<insert id="insertExprtAcbg" parameterClass="map">
+	/*Expert.insertExprtAcbg*/
+	<selectKey type="pre" keyProperty="exprt_acbg_mng_no" resultClass="int">
+		SELECT SEQ_TB_EXPRT_ACBG.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO TB_EXPRT_ACBG
+		(EXPRT_ACBG_MNG_NO
+		, EXPRT_MNG_NO
+		, ACBG_SCHL_NM
+		, ACBG_SE_NM
+		, ACBG_MJR_NM
+		, ACBG_GRDTN_YR
+		, TEMP_FILED
+		)
+		VALUES
+		(#exprt_acbg_mng_no#
+		, #exprt_mng_no#
+		, #acbg_schl_nm#
+		, #acbg_se_nm#
+		, #acbg_mjr_nm#
+		, #acbg_grdtn_yr#
+		, #temp_filed#
+		)
+	</insert>
+	
+	<!-- 전문가 경력사항 등록 -->
+	<insert id="insertExprtCrr" parameterClass="map">
+	/*Expert.insertExprtCrr*/
+	<selectKey type="pre" keyProperty="exprt_crr_mng_no" resultClass="int">
+		SELECT SEQ_TB_EXPRT_CRR.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO TB_EXPRT_CRR
+		(EXPRT_CRR_MNG_NO
+		, EXPRT_MNG_NO
+		, CRR_OGDP_NM
+		, CRR_JBTTL_NM
+		, CRR_BGNG_YR
+		, CRR_END_YR
+		)
+		VALUES
+		(#exprt_crr_mng_no#
+		, #exprt_mng_no#
+		, #crr_ogdp_nm#
+		, #crr_jbttl_nm#
+		, #crr_bgng_yr#
+		, #crr_end_yr#
+		)
+	</insert>
+	
+	<!-- 전문가 신바이오분류체계 등록 -->
+	<insert id="insertExprtBioClsf" parameterClass="map">
+	/*Expert.insertExprtBioClsf*/
+	<selectKey type="pre" keyProperty="exprt_newbio_mng_no" resultClass="int">
+		SELECT SEQ_TB_EXPRT_CLSF.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO TB_EXPRT_CLSF
+		(EXPRT_NEWBIO_MNG_NO
+		, EXPRT_MNG_NO
+		, CLSF_CD_TYPE
+		, EXPRT_LCLSF_CD
+		, EXPRT_MCLSF_CD
+		, EXPRT_SCLSF_CD
+		)
+		VALUES
+		(#exprt_newbio_mng_no#
+		, #exprt_mng_no#
+		, '01'
+		, TRIM(#bioClsf_lclsf_cd#)
+		, TRIM(#bioClsf_mclsf_cd#)
+		, TRIM(#bioClsf_sclsf_cd#)
+		)
+	</insert>
+	
+	<!-- 전문가 정책분류체계 등록 -->
+	<insert id="insertExprtPlcyClsf" parameterClass="map">
+	/*Expert."insertExprtPlcyClsf"*/
+	<selectKey type="pre" keyProperty="exprt_newbio_mng_no" resultClass="int">
+		SELECT SEQ_TB_EXPRT_CLSF.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO TB_EXPRT_CLSF
+		(EXPRT_NEWBIO_MNG_NO
+		, EXPRT_MNG_NO
+		, CLSF_CD_TYPE
+		, EXPRT_LCLSF_CD
+		, EXPRT_MCLSF_CD
+		, EXPRT_SCLSF_CD
+		)
+		VALUES
+		(#exprt_newbio_mng_no#
+		, #exprt_mng_no#
+		, '02'
+		, TRIM(#plcyClsf_lclsf_cd#)
+		, TRIM(#plcyClsf_mclsf_cd#)
+		, TRIM(#plcyClsf_sclsf_cd#)
+		)
+	</insert>
+	
+	<!-- 전문가 수상내역 등록 -->
+	<insert id="insertExprtWnawd" parameterClass="map">
+	/*Expert."insertExprtWnawd"*/
+	<selectKey type="pre" keyProperty="exprt_wnawd_dsctn_mng_no" resultClass="int">
+		SELECT SEQ_TB_EXPRT_WNAWD.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO TB_EXPRT_WNAWD
+		(EXPRT_WNAWD_DSCTN_MNG_NO
+		, EXPRT_MNG_NO
+		, WNAWD_DSCTN
+		, WNAWD_YR
+		)
+		VALUES
+		(#exprt_wnawd_dsctn_mng_no#
+		, #exprt_mng_no#
+		, #wnawd_dsctn#
+		, #wnawd_yr#
+		)
+	</insert>
+	
+	<!-- 전문가 센터 활용실적 등록 -->
+	<insert id="insertExprtUtlzDsctn" parameterClass="map">
+	/*Expert."insertExprtUtlzDsctn"*/
+	<selectKey type="pre" keyProperty="exprt_utlz_dsctn_mng_no" resultClass="int">
+		SELECT SEQ_TB_EXPRT_UTLZ_DSCTN.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO TB_EXPRT_UTLZ_DSCTN
+		(EXPRT_UTLZ_DSCTN_MNG_NO
+		, EXPRT_MNG_NO
+		, UTLZ_YMD
+		, UTLZ_PRPS
+		, UTLZ_RMRK_CN
+		, INFO_EXPRTUSER
+		)
+		VALUES
+		(#exprt_utlz_dsctn_mng_no#
+		, #exprt_mng_no#
+		, TO_DATE(#utlz_ymd#,'YYYY-MM-DD')
+		, #utlz_prps#
+		, #utlz_rmrk_cn#
+		, #info_exprtuser#
+		)
+	</insert>
+	
+	<!-- 전문가정보 프로필 사진정보 수정 -->	
+	<update id="updateExpertProfile" parameterClass="map">
+	/* Expert.updateExpertProfile */
+		UPDATE TB_BSC_INFO SET 
+			LAST_IDFR_ID = #loginid#
+		    , LAST_IDNTY_YMD = SYSDATE		
+		    , IMG_FILE_PATH_NM = #img_file_path_nm#		
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+	</update>
+	
+	<!-- 전문가정보 조회수 수정 -->	
+	<update id="updateExpertInqCnt" parameterClass="map">
+	/* Expert.updateExpertInqCnt */
+		UPDATE TB_BSC_INFO SET 
+			INQ_CNT = INQ_CNT + 1
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+	</update>
+	
+	<!-- 전문인력정보 중복 조회 -->	
+	<select id="getExprtBscInfoDpcnCnt" resultClass="int" parameterClass="map">
+	/* Expert.getExprtBscInfoDpcnCnt */	
+		SELECT COUNT(*)
+		FROM TB_BSC_INFO 
+		WHERE EXPRT_NM = #exprt_nm#
+          AND BRTH_DT = #brth_dt#
+          AND EXPRT_MNG_NO != #exprt_mng_no#
+	</select>
+	
+</sqlMap>

@@ -1,0 +1,793 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ExpertTemp">
+
+	<resultMap id="ExpertTempList" class="java.util.HashMap" >
+	    <result property="exprtMngNo"    column="EXPRT_MNG_NO" />
+	    <result property="exprtNm"       column="EXPRT_NM" />
+	    <result property="exprtGndr"     column="EXPRT_GNDR" />
+	    <result property="brthDt"        column="BRTH_DT"/>
+	    <result property="ogdpNm"        column="OGDP_NM" />
+	    <result property="jbpsNm"        column="JBPS_NM" />
+	    <result property="mblTelno"      column="MBL_TELNO" />
+	    <result property="coTelno"       column="CO_TELNO" />
+	    <result property="emlAddr"       column="EML_ADDR" />
+	    <result property="asstEmlAddr"   column="ASST_EML_ADDR" />
+	    <result property="kywdNm"        column="KYWD_NM" />
+	    <result property="srcNm"         column="SRC_NM" />
+	    <result property="rmrkCn"        column="RMRK_CN" />
+	    <result property="imgFilePathNm" column="IMG_FILE_PATH_NM" />
+	    <result property="inqCnt"        column="INQ_CNT" />
+	    <result property="frstRgtrId"    column="FRST_RGTR_ID" />
+	    <result property="frstRegDt"     column="FRST_REG_DT" />
+	    <result property="lastMdfrId"    column="LAST_MDFR_ID" />
+	    <result property="lastMdfcnDt"   column="LAST_MDFCN_DT" />
+	    <result property="mngSeq"        column="MNG_SEQ" />
+	</resultMap>
+
+	
+	<!-- 전문가 엑셀등록 임시저장 Count-->	
+	<select id="getTempExprtBscInfoCount" resultClass="int" parameterClass="map">
+	/* ExpertTemp.getTempExprtBscInfoCount */	
+		SELECT COUNT(*)
+		FROM TEMP_TB_BSC_INFO 
+		WHERE FRST_RGTR_ID = #loginid#
+          AND FRST_REG_DT IS NOT NULL
+	</select>		
+
+	<!-- 임시 전문가 기본정보 -->	
+	<select id="getTempExprtBscInfoDetail" resultClass="hmap" parameterClass="map">
+	/* ExpertTemp.getTempExprtBscInfoDetail */	
+			SELECT A.EXPRT_MNG_NO
+				, A.EXPRT_NM
+				, A.EXPRT_GNDR
+				, SUBSTR(BRTH_DT, 1, 4) AS BRTH_DT
+				, A.OGDP_NM
+				, A.JBPS_NM
+				, A.MBL_TELNO
+				, A.CO_TELNO
+				, A.EML_ADDR
+				, A.ASST_EML_ADDR
+				, A.KYWD_NM
+				, A.SRC_NM
+				, A.RMRK_CN
+				, A.IMG_FILE_PATH_NM
+				, A.INQ_CNT
+				, A.FRST_RGTR_ID
+				, A.FRST_REG_DT
+				, A.LAST_MDFR_ID
+				, A.LAST_MDFCN_DT
+				, B.HNAME AS LAST_MDFR_NM
+				, A.MNG_SEQ
+				, A.DEPT_NM
+		FROM TEMP_TB_BSC_INFO A
+			, BIOZINE.UNITY_MEMBER B
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+		   AND A.LAST_MDFR_ID = B.USERID(+) 
+	</select>	
+	
+	<!-- 임시 전문가 목록 -->	
+	<select id="getTempExprtBscInfoList" resultClass="hmap" parameterClass="map">
+	/* ExpertTemp.getTempExprtBscInfoList */	
+		SELECT EXPRT_MNG_NO
+			, EXPRT_NM
+			, EXPRT_GNDR
+			, SUBSTR(BRTH_DT, 1, 4) AS BRTH_DT
+			, OGDP_NM
+			, JBPS_NM
+			, MBL_TELNO
+			, CO_TELNO
+			, EML_ADDR
+			, ASST_EML_ADDR
+			, KYWD_NM
+			, SRC_NM
+			, RMRK_CN
+			, IMG_FILE_PATH_NM
+			, INQ_CNT
+			, FRST_RGTR_ID
+			, FRST_REG_DT
+			, LAST_MDFR_ID
+			, LAST_MDFCN_DT
+			, MNG_SEQ
+			, DEPT_NM
+			, (SELECT COUNT(*) FROM TEMP_TB_EXPRT_ERR_DSCTN WHERE EXPRT_INPT_MNG_NO = A.EXPRT_MNG_NO) AS ERR_CNT
+		FROM TEMP_TB_BSC_INFO A
+		WHERE  FRST_RGTR_ID = #loginid#
+		ORDER BY EXPRT_MNG_NO
+	</select>	
+	
+	<!-- 임시 전문가 최근활동 -->	
+	<select id="getTempExprtRcntActyList" resultClass="hmap" parameterClass="map">
+	/* ExpertTemp.getTempExprtRcntActyList */	
+		SELECT EXPRT_RCNT_ACTV_MNG_NO
+			, EXPRT_MNG_NO
+			, RCNT_ACTV_OGDP_NM
+			, RCNT_ACTV_JBTTL_NM
+			, RCNT_ACTV_BGNG_YR
+			, RCNT_ACTV_END_YR
+			, CASE 
+                WHEN RCNT_ACTV_OGDP_NM IS NULL THEN '소속 누락'
+                ELSE ''
+            END AS RCNT_ACTV_ERR
+		FROM TEMP_TB_EXPRT_RCNT_ACTY
+		WHERE EXPRT_MNG_NO = #exprt_mng_no# 
+		ORDER BY EXPRT_RCNT_ACTV_MNG_NO
+	</select>
+	
+	<!-- 임시 전문가 학력사항 -->	
+	<select id="getTempExprtAcbgList" resultClass="hmap" parameterClass="map">
+	/* ExpertTemp.getTempExprtAcbgList */	
+		SELECT EXPRT_ACBG_MNG_NO
+			, EXPRT_MNG_NO
+			, ACBG_SCHL_NM
+			, TRIM(ACBG_SE_NM) AS ACBG_SE_NM
+			, ACBG_MJR_NM
+<!-- 			, CASE  -->
+<!--                    WHEN ACBG_GRDTN_YR <![CDATA[<=]]> 50 THEN CONCAT('20', LPAD(ACBG_GRDTN_YR, 2, '0')) -->
+<!--                    ELSE CONCAT('19', LPAD(ACBG_GRDTN_YR, 2, '0')) -->
+<!--                END AS ACBG_GRDTN_YR -->
+            , ACBG_GRDTN_YR
+			, TEMP_FILED
+			, CASE 
+                WHEN TRIM(ACBG_SE_NM) IS NULL AND ACBG_SCHL_NM IS NULL THEN '구분, 학교명 누락'
+                WHEN ACBG_SCHL_NM IS NULL THEN '학교명 누락'
+                WHEN TRIM(ACBG_SE_NM) IS NULL THEN '구분 누락'
+                ELSE ''
+            END AS ACBG_ERR
+		FROM TEMP_TB_EXPRT_ACBG
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+		ORDER BY ACBG_GRDTN_YR DESC
+	</select>
+	
+	<!-- 임시 전문가 경력사항 -->	
+	<select id="getTempExprtCrrList" resultClass="hmap" parameterClass="map">
+	/* ExpertTemp.getTempExprtCrrList */	
+		SELECT EXPRT_CRR_MNG_NO
+			, EXPRT_MNG_NO
+			, CRR_OGDP_NM
+			, CRR_JBTTL_NM
+			, CRR_BGNG_YR
+			, CRR_END_YR
+			, CASE 
+                WHEN CRR_OGDP_NM IS NULL THEN '소속 누락'
+                ELSE ''
+            END AS CRR_ERR
+		FROM TEMP_TB_EXPRT_CRR 
+		WHERE EXPRT_MNG_NO = #exprt_mng_no# 
+		ORDER BY CRR_BGNG_YR DESC
+	</select>
+	
+	<!-- 임시 전문가  정책분류 -->	
+	<select id="getTempPlcyClsfList" resultClass="hmap" parameterClass="map">
+	/* ExpertTemp.getTempPlcyClsfList */	
+		SELECT A.EXPRT_NEWBIO_MNG_NO
+			, A.EXPRT_MNG_NO
+			, A.CLSF_CD_TYPE
+			, TRIM(A.EXPRT_LCLSF_CD) AS EXPRT_LCLSF_CD
+		    , TRIM(A.EXPRT_MCLSF_CD) AS EXPRT_MCLSF_CD
+		    , TRIM(A.EXPRT_SCLSF_CD) AS EXPRT_SCLSF_CD
+		    , (SELECT CL_CODE_NM FROM COMTCCMMNCLCODE WHERE CL_CODE = TRIM(A.EXPRT_LCLSF_CD)) AS LCLSF_NM
+    		, (SELECT CODE_ID_NM FROM COMTCCMMNCODE WHERE CODE_ID = TRIM(A.EXPRT_MCLSF_CD)) AS MCLSF_NM
+    		, (SELECT CODE_NM FROM COMTCCMMNDETAILCODE WHERE CODE = TRIM(A.EXPRT_SCLSF_CD)) AS SCLSF_NM		    
+		    , CASE 
+                WHEN A.EXPRT_LCLSF_CD IS NULL THEN '대분류 누락'
+                ELSE ''
+            END AS PLCY_CLSF_ERR
+		FROM TEMP_TB_EXPRT_CLSF A
+		WHERE 1=1
+			AND CLSF_CD_TYPE = '02'
+			AND EXPRT_MNG_NO = #exprt_mng_no# 
+		ORDER BY EXPRT_NEWBIO_MNG_NO
+	</select>
+	
+	<!-- 임시 전문가  신바이오 분류 -->	
+	<select id="getTempBioClsfList" resultClass="hmap" parameterClass="map">
+	/* ExpertTemp.getTempBioClsfList */	
+		SELECT
+   		DISTINCT A.EXPRT_NEWBIO_MNG_NO
+		    , A.EXPRT_MNG_NO
+		    , A.CLSF_CD_TYPE
+		    , TRIM(A.EXPRT_LCLSF_CD) AS EXPRT_LCLSF_CD
+		    , TRIM(A.EXPRT_MCLSF_CD) AS EXPRT_MCLSF_CD
+		    , TRIM(A.EXPRT_SCLSF_CD) AS EXPRT_SCLSF_CD
+		    , (SELECT CL_CODE_NM FROM BIOZINE.COMTCCMMNCLCODE WHERE CL_CODE = TRIM(A.EXPRT_LCLSF_CD)) AS LCLSF_NM
+    		, (SELECT CODE_ID_NM FROM BIOZINE.COMTCCMMNCODE WHERE CODE_ID = TRIM(A.EXPRT_MCLSF_CD)) AS MCLSF_NM
+    		, (SELECT CODE_NM FROM BIOZINE.COMTCCMMNDETAILCODE WHERE CODE = TRIM(A.EXPRT_SCLSF_CD)) AS SCLSF_NM
+		    , CASE 
+                WHEN A.EXPRT_LCLSF_CD IS NULL THEN <![CDATA['R&D목적 누락']]>
+                ELSE ''
+            END AS BIO_CLSF_ERR
+		FROM
+		    TEMP_TB_EXPRT_CLSF A
+		WHERE 1=1
+			AND A.EXPRT_MNG_NO = #exprt_mng_no# 
+			AND A.CLSF_CD_TYPE = 01
+		ORDER BY EXPRT_NEWBIO_MNG_NO
+	</select>
+	
+	<!-- 임시 전문가 수상내역 -->	
+	<select id="getTempExprtWnawdList" resultClass="hmap" parameterClass="map">
+	/* ExpertTemp.getTempExprtWnawdList */	
+		SELECT EXPRT_WNAWD_DSCTN_MNG_NO
+			, EXPRT_MNG_NO
+			, WNAWD_DSCTN
+			, WNAWD_YR
+			, CASE
+                WHEN WNAWD_DSCTN IS NULL THEN '수상내역 누락'
+                ELSE ''
+            END WNAWD_ERR
+		FROM TEMP_TB_EXPRT_WNAWD
+		WHERE EXPRT_MNG_NO = #exprt_mng_no# 
+		ORDER BY WNAWD_YR DESC
+	</select>
+	
+	<!-- 임시 센터 활용실적 내역 -->	
+	<select id="getTempExprtUtlzDsctnList" resultClass="hmap" parameterClass="map">
+	/* ExpertTemp.getTempExprtUtlzDsctnList */	
+		SELECT EXPRT_UTLZ_DSCTN_MNG_NO
+			, EXPRT_MNG_NO
+			, TO_CHAR(UTLZ_YMD,'YYYY-MM-DD') AS UTLZ_YMD
+			, UTLZ_PRPS
+			, UTLZ_RMRK_CN
+			, INFO_EXPRTUSER
+			, CASE
+                WHEN UTLZ_YMD IS NULL AND UTLZ_PRPS IS NULL THEN '활용일자, 활용목적 누락'
+                WHEN UTLZ_YMD IS NULL THEN '활용일자 누락'
+                WHEN UTLZ_PRPS IS NULL THEN '활용목적 누락'
+                ELSE ''
+            END UTLZ_ERR
+		FROM TEMP_TB_EXPRT_UTLZ_DSCTN 
+		WHERE EXPRT_MNG_NO = #exprt_mng_no# 
+		ORDER BY UTLZ_YMD DESC
+	</select>
+	
+	<!-- 임시 에러내용 검증결과  -->	
+	<select id="getTempExprtErrDsctnList" resultClass="hmap" parameterClass="map">
+	/* ExpertTemp.getTempExprtErrDsctnList */	
+		SELECT EXPRT_ERR_MNG_NO
+			, EXPRT_INPT_MNG_NO
+			, EXPRT_INPT_ERR_CD
+			, EXPRT_INPT_ERR_ARTCL_NM
+		FROM TEMP_TB_EXPRT_ERR_DSCTN
+		WHERE EXPRT_INPT_MNG_NO = #exprt_mng_no#
+		    AND EXPRT_INPT_ERR_CD IN ( '1' )
+	</select>
+	
+	<!-- 임시 에러내용 등록 -->
+	<insert id="insertTempExprtErrDsctn" parameterClass="map">
+	/*ExpertTemp.insertTempExprtErrDsctn*/
+	<selectKey type="pre" keyProperty="exprt_err_mng_no" resultClass="int">
+		SELECT SEQ_TEMP_EXPRT_ERR_DSCTN.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO TEMP_TB_EXPRT_ERR_DSCTN
+		(EXPRT_ERR_MNG_NO, EXPRT_INPT_MNG_NO, EXPRT_INPT_ERR_CD, EXPRT_INPT_ERR_ARTCL_NM, FRST_RGTR_ID)
+		VALUES
+		(#exprt_err_mng_no#, #exprt_inpt_mng_no#, #exprt_inpt_err_cd#, #exprt_inpt_err_artcl_nm#, #loginid#)
+	</insert>
+	
+	<!-- 임시 에러내용  삭제 -->
+	<delete id="deleteTempExprtErrDsctn" parameterClass="map">
+	/*ExpertTemp.deleteTempExprtErrDsctn*/
+		DELETE TEMP_TB_EXPRT_ERR_DSCTN
+		WHERE EXPRT_INPT_MNG_NO = #exprt_inpt_mng_no# 
+			AND FRST_RGTR_ID = #loginid#
+	</delete>
+	
+	<!-- 임시 전문가 기본정보 수정  -->
+	<update id="updateTempExprtBscInfo" parameterClass="map">
+	/*ExpertTemp.updateTempExprtBscInfo*/
+		UPDATE TEMP_TB_BSC_INFO SET 
+			 EXPRT_NM=#exprt_nm#
+			, EXPRT_GNDR=#exprt_gndr#
+			, BRTH_DT=#brth_dt#
+			, OGDP_NM=#ogdp_nm#
+			, DEPT_NM=#dept_nm#
+			, JBPS_NM=#jbps_nm#
+			, MBL_TELNO=#mbl_telno#
+			, CO_TELNO=#co_telno#
+			, EML_ADDR=#eml_addr#
+			, ASST_EML_ADDR=#asst_eml_addr#
+			, KYWD_NM=#kywd_nm#
+			, SRC_NM=#src_nm#
+			, RMRK_CN=#rmrk_cn#
+			, LAST_MDFR_ID=#last_mdfr_id#
+			, LAST_MDFCN_DT= SYSDATE
+		WHERE
+			EXPRT_MNG_NO = #exprt_mng_no#
+	</update>
+	
+	<!-- 임시 최근활동 삭제-->
+	<delete id="deleteTempExprtRcntActv" parameterClass="map">
+	/*ExpertTemp.deleteTempExprtRcntActv*/
+		DELETE TEMP_TB_EXPRT_RCNT_ACTY
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+	</delete>
+	
+	<!-- 임시 학력사항 삭제-->
+	<delete id="deleteTempExprtAcbg" parameterClass="map">
+	/*ExpertTemp.deleteTempExprtRcntActv*/
+		DELETE TEMP_TB_EXPRT_ACBG
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+	</delete>
+	
+	<!-- 임시 경력사항 삭제-->
+	<delete id="deleteTempExprtCrr" parameterClass="map">
+	/*ExpertTemp.deleteTempExprtCrr*/
+		DELETE TEMP_TB_EXPRT_CRR
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+			
+	</delete>
+	
+	<!-- 임시 신바이오분류코드 삭제-->
+	<delete id="deleteTempExprtBioClsf" parameterClass="map">
+	/*ExpertTemp."deleteTempExprtBioClsf"*/
+		DELETE TEMP_TB_EXPRT_CLSF
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+			AND CLSF_CD_TYPE = '01'
+	</delete>
+	
+	<!-- 임시 정책분류코드 삭제-->
+	<delete id="deleteTempExprtPlcyClsf" parameterClass="map">
+	/*ExpertTemp.deleteTempExprtPlcyClsf*/
+		DELETE TEMP_TB_EXPRT_CLSF
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+			AND CLSF_CD_TYPE = '02'
+	</delete>
+	
+	<!-- 임시 수상내역 삭제-->
+	<delete id="deleteTempExprtWnawd" parameterClass="map">
+	/*ExpertTemp.deleteTempExprtWnawd*/
+		DELETE TEMP_TB_EXPRT_WNAWD
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+	</delete>
+	
+	<!-- 임시 센터 활용실적 삭제-->
+	<delete id="deleteTempExprtUtlzDsctn" parameterClass="map">
+	/*ExpertTemp.deleteTempExprtUtlzDsctn*/
+		DELETE TEMP_TB_EXPRT_UTLZ_DSCTN
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+	</delete>
+	
+	<!-- 임시 전문가 기본정보  삭제-->
+	<delete id="deleteTempBscInfo" parameterClass="map">
+	/*ExpertTemp.deleteTempBscInfo*/
+		DELETE TEMP_TB_BSC_INFO
+		WHERE FRST_RGTR_ID = #loginid#
+	</delete>
+	
+	<!-- 해당 임시 전문가 기본정보 삭제-->
+	<delete id="deleteTempBscInfoMngNo" parameterClass="map">
+	/*ExpertTemp.deleteTempBscInfoMngNo*/
+		DELETE TEMP_TB_BSC_INFO
+		WHERE EXPRT_MNG_NO = #exprt_mng_no#
+	</delete>
+	
+	<!-- 시퀀스 값만 가져오는 쿼리 -->
+	<select id="getNextExprtMngNo" resultClass="int">
+	    SELECT SEQ_TEMP_TB_BSC_INFO.NEXTVAL FROM DUAL
+	</select>
+	
+	<!-- 임시 전문가 기본정보 등록 -->
+	<insert id="insertTempBscInfo" parameterClass="map">
+	/*ExpertTemp.insertTempBscInfo*/
+		INSERT INTO TEMP_TB_BSC_INFO
+		(EXPRT_MNG_NO
+		, EXPRT_NM
+		, EXPRT_GNDR
+		, BRTH_DT
+		, OGDP_NM
+		, DEPT_NM
+		, JBPS_NM
+		, MBL_TELNO
+		, CO_TELNO
+		, EML_ADDR
+		, ASST_EML_ADDR
+		, KYWD_NM
+		, SRC_NM
+		, RMRK_CN
+		, FRST_RGTR_ID
+		, FRST_REG_DT
+		, LAST_MDFR_ID
+		, LAST_MDFCN_DT
+		)
+		VALUES
+		(#exprt_mng_no#
+		, #exprt_nm#
+		, #exprt_gndr#
+		, #brth_dt#
+		, #ogdp_nm#
+		, #dept_nm#
+		, #jbps_nm#
+		, #mbl_telno#
+		, #co_telno#
+		, #eml_addr#
+		, #asst_eml_addr#
+		, #kywd_nm#
+		, #src_nm#
+		, #rmrk_cn#
+		, #frst_rgtr_id#
+		, SYSDATE
+		, #last_mdfr_id#
+		, SYSDATE
+		)
+	</insert>	
+		
+	<!-- 임시 최근활동 등록 -->
+	<insert id="insertTempExprtRcntActy" parameterClass="map">
+	/*ExpertTemp.insertTempExprtRcntActy*/
+	<selectKey type="pre" keyProperty="exprt_rcnt_actv_mng_no" resultClass="int">
+		SELECT SEQ_TEMP_TB_EXPRT_RCNT_ACTY.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO TEMP_TB_EXPRT_RCNT_ACTY
+		(EXPRT_RCNT_ACTV_MNG_NO
+		, EXPRT_MNG_NO
+		, RCNT_ACTV_OGDP_NM
+		, RCNT_ACTV_JBTTL_NM
+		, RCNT_ACTV_BGNG_YR
+		, RCNT_ACTV_END_YR
+		)
+		VALUES
+		(#exprt_rcnt_actv_mng_no#
+		, #exprt_mng_no#
+		, #rcnt_actv_ogdp_nm#
+		, #rcnt_actv_jbttl_nm#
+		, #rcnt_actv_bgng_yr#
+		, #rcnt_actv_end_yr#
+		)
+	</insert>
+	
+	<!-- 임시 학력사항 등록 -->
+	<insert id="insertTempExprtAcbg" parameterClass="map">
+	/*ExpertTemp.insertTempExprtAcbg*/
+	<selectKey type="pre" keyProperty="exprt_acbg_mng_no" resultClass="int">
+		SELECT SEQ_TEMP_TB_EXPRT_ACBG.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO TEMP_TB_EXPRT_ACBG
+		(EXPRT_ACBG_MNG_NO
+		, EXPRT_MNG_NO
+		, ACBG_SCHL_NM
+		, ACBG_SE_NM
+		, ACBG_MJR_NM
+		, ACBG_GRDTN_YR
+		, TEMP_FILED
+		)
+		VALUES
+		(#exprt_acbg_mng_no#
+		, #exprt_mng_no#
+		, #acbg_schl_nm#
+		, #acbg_se_nm#
+		, #acbg_mjr_nm#
+		, #acbg_grdtn_yr#
+		, #temp_filed#
+		)
+	</insert>
+	
+	<!-- 임시 경력사항 등록 -->
+	<insert id="insertTempExprtCrr" parameterClass="map">
+	/*ExpertTemp.insertTempExprtCrr*/
+	<selectKey type="pre" keyProperty="exprt_crr_mng_no" resultClass="int">
+		SELECT SEQ_TEMP_TB_EXPRT_CRR.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO TEMP_TB_EXPRT_CRR
+		(EXPRT_CRR_MNG_NO
+		, EXPRT_MNG_NO
+		, CRR_OGDP_NM
+		, CRR_JBTTL_NM
+		, CRR_BGNG_YR
+		, CRR_END_YR
+		)
+		VALUES
+		(#exprt_crr_mng_no#
+		, #exprt_mng_no#
+		, #crr_ogdp_nm#
+		, #crr_jbttl_nm#
+		, #crr_bgng_yr#
+		, #crr_end_yr#
+		)
+	</insert>
+	
+	<!-- 임시 신바이오분류체계 등록 -->
+	<insert id="insertTempExprtBioClsf" parameterClass="map">
+	/*ExpertTemp.insertTempExprtBioClsf*/
+	<selectKey type="pre" keyProperty="exprt_newbio_mng_no" resultClass="int">
+		SELECT SEQ_TEMP_TB_EXPRT_CLSF.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO TEMP_TB_EXPRT_CLSF
+		(EXPRT_NEWBIO_MNG_NO
+		, EXPRT_MNG_NO
+		, CLSF_CD_TYPE
+		, EXPRT_LCLSF_CD
+		, EXPRT_MCLSF_CD
+		, EXPRT_SCLSF_CD
+		)
+		VALUES
+		(#exprt_newbio_mng_no#
+		, #exprt_mng_no#
+		, '01'
+		, TRIM(#bioClsf_lclsf_cd#)
+		, TRIM(#bioClsf_mclsf_cd#)
+		, TRIM(#bioClsf_sclsf_cd#)
+		)
+	</insert>
+	
+	<!-- 임시 정책분류체계 등록 -->
+	<insert id="insertTempExprtPlcyClsf" parameterClass="map">
+	/*ExpertTemp."insertTempExprtPlcyClsf"*/
+	<selectKey type="pre" keyProperty="exprt_newbio_mng_no" resultClass="int">
+		SELECT SEQ_TEMP_TB_EXPRT_CLSF.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO TEMP_TB_EXPRT_CLSF
+		(EXPRT_NEWBIO_MNG_NO
+		, EXPRT_MNG_NO
+		, CLSF_CD_TYPE
+		, EXPRT_LCLSF_CD
+		, EXPRT_MCLSF_CD
+		, EXPRT_SCLSF_CD
+		)
+		VALUES
+		(#exprt_newbio_mng_no#
+		, #exprt_mng_no#
+		, '02'
+		, TRIM(#plcyClsf_lclsf_cd#)
+		, TRIM(#plcyClsf_mclsf_cd#)
+		, TRIM(#plcyClsf_sclsf_cd#)
+		)
+	</insert>
+	
+	<!-- 임시 수상내역 등록 -->
+	<insert id="insertTempExprtWnawd" parameterClass="map">
+	/*ExpertTemp."insertTempExprtWnawd"*/
+	<selectKey type="pre" keyProperty="exprt_wnawd_dsctn_mng_no" resultClass="int">
+		SELECT SEQ_TEMP_TB_EXPRT_WNAWD.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO TEMP_TB_EXPRT_WNAWD
+		(EXPRT_WNAWD_DSCTN_MNG_NO
+		, EXPRT_MNG_NO
+		, WNAWD_DSCTN
+		, WNAWD_YR
+		)
+		VALUES
+		(#exprt_wnawd_dsctn_mng_no#
+		, #exprt_mng_no#
+		, #wnawd_dsctn#
+		, #wnawd_yr#
+		)
+	</insert>
+	
+	<!-- 임시 센터 활용실적 등록 -->
+	<insert id="insertTempExprtUtlzDsctn" parameterClass="map">
+	/*ExpertTemp.insertTempExprtUtlzDsctn*/
+	<selectKey type="pre" keyProperty="exprt_utlz_dsctn_mng_no" resultClass="int">
+		SELECT SEQ_TEMP_TB_EXPRT_UTLZ_DSCTN.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO TEMP_TB_EXPRT_UTLZ_DSCTN
+		(EXPRT_UTLZ_DSCTN_MNG_NO
+		, EXPRT_MNG_NO
+		<isNotNull property="utlz_ymd">
+		, UTLZ_YMD
+		</isNotNull>
+		, UTLZ_PRPS
+		, UTLZ_RMRK_CN
+		, INFO_EXPRTUSER
+		)
+		VALUES
+		(#exprt_utlz_dsctn_mng_no#
+		, #exprt_mng_no#
+		<isNotNull property="utlz_ymd">
+		, TO_DATE(#utlz_ymd#,'YYYY-MM-DD')
+		</isNotNull>
+		, #utlz_prps#
+		, #utlz_rmrk_cn#
+		, #info_exprtuser#
+		)
+	</insert>
+	
+	<!-- 전문가 기본정보 이관 -->
+	<insert id="insertExprtBscInfoTransfer" parameterClass="map">
+	/*ExpertTemp.insertExprtBscInfoTransfer*/
+	<selectKey type="pre" keyProperty="new_exprt_mng_no" resultClass="int">
+		SELECT SEQ_TB_BSC_INFO.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO TB_BSC_INFO
+		(
+		EXPRT_MNG_NO
+		, EXPRT_NM
+		, EXPRT_GNDR
+		, BRTH_DT
+		, OGDP_NM
+		, DEPT_NM
+		, JBPS_NM
+		, MBL_TELNO
+		, CO_TELNO
+		, EML_ADDR
+		, ASST_EML_ADDR
+		, KYWD_NM
+		, SRC_NM
+		, RMRK_CN
+		, IMG_FILE_PATH_NM
+		, INQ_CNT
+		, FRST_RGTR_ID
+		, FRST_REG_DT
+		, LAST_MDFR_ID	
+		, LAST_MDFCN_DT
+		, LAST_IDFR_ID
+		, LAST_IDNTY_YMD
+		) 
+		VALUES
+		(
+		#new_exprt_mng_no#
+		, #exprt_nm#
+		, #exprt_gndr#
+		, #brth_dt#
+		, #ogdp_nm#
+		, #dept_nm#
+		, #jbps_nm#
+		, #mbl_telno#
+		, #co_telno#
+		, #eml_addr#
+		, #asst_eml_addr#
+		, #kywd_nm#
+		, #src_nm#
+		, #rmrk_cn#
+		, #img_file_path_nm#
+		, #inq_cnt#
+		, #frst_rgtr_id#
+		, SYSDATE
+		, #last_mdfr_id#
+		, SYSDATE
+		, #last_idfr_id#
+		, SYSDATE
+		)
+	</insert>
+	
+	<!-- 전문가 최근활동 이관 -->
+	<insert id="insertExprtRcntActyTransfer" parameterClass="map">
+	/*ExpertTemp.insertExprtRcntActyTransfer*/
+		INSERT INTO TB_EXPRT_RCNT_ACTY
+		SELECT SEQ_TB_EXPRT_RCNT_ACTY.NEXTVAL
+		      ,A.*
+		FROM
+		(
+			SELECT 
+				#new_exprt_mng_no#
+				, RCNT_ACTV_OGDP_NM
+				, RCNT_ACTV_JBTTL_NM
+				, RCNT_ACTV_BGNG_YR
+				, RCNT_ACTV_END_YR
+			FROM TEMP_TB_EXPRT_RCNT_ACTY
+			WHERE EXPRT_MNG_NO = #temp_exprt_mng_no#
+		) A
+	</insert>
+	
+	<!-- 전문가 학력사항 이관 -->
+	<insert id="insertExprtAcbgTransfer" parameterClass="map">
+	/*ExpertTemp.insertExprtAcbgTransfer*/
+		INSERT INTO TB_EXPRT_ACBG
+		SELECT SEQ_TB_EXPRT_ACBG.NEXTVAL
+		      ,A.*
+		FROM
+		(
+		SELECT 
+			#new_exprt_mng_no#
+			,ACBG_SCHL_NM
+			,ACBG_SE_NM
+			,ACBG_MJR_NM
+			,ACBG_GRDTN_YR
+			,TEMP_FILED
+		FROM TEMP_TB_EXPRT_ACBG
+		WHERE EXPRT_MNG_NO = #temp_exprt_mng_no#
+		) A
+		
+	</insert>
+	
+	<!-- 전문가 경력사항 이관 -->
+	<insert id="insertExprtCrrTransfer" parameterClass="map">
+	/*ExpertTemp.insertExprtCrrTransfer*/
+		INSERT INTO TB_EXPRT_CRR
+		SELECT SEQ_TB_EXPRT_CRR.NEXTVAL
+		      ,A.*
+		FROM
+		(
+		SELECT 
+			#new_exprt_mng_no#
+			,CRR_OGDP_NM
+			,CRR_JBTTL_NM
+			,CRR_BGNG_YR
+			,CRR_END_YR
+		FROM TEMP_TB_EXPRT_CRR
+		WHERE EXPRT_MNG_NO = #temp_exprt_mng_no#
+		) A
+	</insert>
+	
+	<!-- 전문가 신바이오분류체계 이관 -->
+	<insert id="insertExprtBioClsfTransfer" parameterClass="map">
+	/*ExpertTemp.insertExprtBioClsfTransfer*/
+		INSERT INTO TB_EXPRT_CLSF
+		SELECT SEQ_TB_EXPRT_CLSF.NEXTVAL
+		      ,A.*
+		FROM
+		(
+		SELECT 
+			#new_exprt_mng_no#
+			,CLSF_CD_TYPE
+			,TRIM(EXPRT_LCLSF_CD)
+			,TRIM(EXPRT_MCLSF_CD)
+			,TRIM(EXPRT_SCLSF_CD)
+		FROM TEMP_TB_EXPRT_CLSF
+		WHERE EXPRT_MNG_NO = #temp_exprt_mng_no#
+			AND CLSF_CD_TYPE = '01'
+		) A
+	</insert>
+	
+	<!-- 전문가 정책분류체계 이관 -->
+	<insert id="insertExprtPlcyClsfTransfer" parameterClass="map">
+	/*ExpertTemp.insertExprtPlcyClsfTransfer*/
+		INSERT INTO TB_EXPRT_CLSF
+		SELECT SEQ_TB_EXPRT_CLSF.NEXTVAL
+		      ,A.*
+		FROM
+		(
+		SELECT 
+			#new_exprt_mng_no#
+			,CLSF_CD_TYPE
+			,TRIM(EXPRT_LCLSF_CD)
+			,TRIM(EXPRT_MCLSF_CD)
+			,TRIM(EXPRT_SCLSF_CD)
+		FROM TEMP_TB_EXPRT_CLSF
+		WHERE EXPRT_MNG_NO = #temp_exprt_mng_no#
+			AND CLSF_CD_TYPE = '02'
+		) A
+	</insert>
+	
+	<!-- 전문가 수상내역 이관 -->
+	<insert id="insertExprtWnawdTransfer" parameterClass="map">
+	/*ExpertTemp.insertExprtWnawdTransfer	*/
+		INSERT INTO TB_EXPRT_WNAWD
+		SELECT SEQ_TB_EXPRT_WNAWD.NEXTVAL
+		      ,A.*
+		FROM
+		(
+		SELECT 
+			#new_exprt_mng_no#
+			,WNAWD_DSCTN
+			,WNAWD_YR
+		FROM TEMP_TB_EXPRT_WNAWD
+		WHERE EXPRT_MNG_NO = #temp_exprt_mng_no#
+		) A
+	</insert>
+	
+	<!-- 전문가 센터 내 활용실적 이관 -->
+	<insert id="insertExprtUtlzDsctnTransfer" parameterClass="map">
+	/*ExpertTemp.insertExprtUtlzDsctnTransfer	*/
+		INSERT INTO TB_EXPRT_UTLZ_DSCTN
+		SELECT SEQ_TB_EXPRT_UTLZ_DSCTN.NEXTVAL
+		      ,A.*
+		FROM
+		(
+		SELECT 
+			#new_exprt_mng_no#
+			, UTLZ_YMD
+			, UTLZ_PRPS
+			, UTLZ_RMRK_CN
+			, INFO_EXPRTUSER
+		FROM TEMP_TB_EXPRT_UTLZ_DSCTN
+		WHERE EXPRT_MNG_NO = #temp_exprt_mng_no#
+		) A
+	</insert>
+	
+	<!-- 엑설업로드 전문인력정보 중복 조회 -->	
+	<select id="getExprtBscInfoDpcnExcelCnt" resultClass="int" parameterClass="map">
+	/* ExpertTemp.getExprtBscInfoDpcnExcelCnt */	
+		SELECT COUNT(*)
+		FROM TEMP_TB_BSC_INFO 
+		WHERE EXPRT_NM = #exprt_nm#
+          AND TRIM(BRTH_DT) = #brth_dt#
+          AND EXPRT_MNG_NO != #exprt_mng_no#
+          AND FRST_RGTR_ID =  #loginid#
+	</select>
+	
+</sqlMap>

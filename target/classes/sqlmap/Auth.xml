@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Auth">
+
+	<resultMap id="AuthListValue" class="java.util.HashMap" >
+		<result property="userid"   			column="USERID" />
+		<result property="authrtCd"   			column="AUTHRT_CD" />
+		<result property="authrtBgngTm"   		column="AUTHRT_BGNG_TM" />
+		<result property="authrtEndYmd"  	 	column="AUTHRT_END_YMD"/>
+		<result property="frstRgtrId"   		column="FRST_RGTR_ID" />
+		<result property="frstRegDt"  		 	column="FRST_REG_DT" />
+		<result property="lastMdfrId"   		column="LAST_MDFR_ID" />
+		<result property="lastMdfcnDt"   		column="LAST_MDFCN_DT" />
+	</resultMap>
+	
+	<resultMap id="AuthDetailValue" class="java.util.HashMap" >
+		<result property="userid"   			column="USERID" />
+		<result property="hname"   				column="HNAME" />
+		<result property="authrtCd"   			column="AUTHRT_CD" />
+		<result property="authrtBgngTm"   		column="AUTHRT_BGNG_TM" />
+		<result property="authrtEndYmd"  	 	column="AUTHRT_END_YMD"/>
+		<result property="frstRgtrId"   		column="FRST_RGTR_ID" />
+		<result property="frstRegDt"  		 	column="FRST_REG_DT" />
+		<result property="lastMdfrId"   		column="LAST_MDFR_ID" />
+		<result property="lastMdfcnDt"   		column="LAST_MDFCN_DT" />
+	</resultMap>	
+	
+	<resultMap id="AuthCd" class="java.util.HashMap">
+		<result property="clCode"   			column="CL_CODE" />
+		<result property="codeId"   			column="CODE_ID" />
+		<result property="code"   				column="CODE" />
+		<result property="codeNm"  			 	column="CODE_NM"/>
+		<result property="codeDc"   			column="CODE_DC" />
+		<result property="useAt"  			 	column="USE_AT" />
+		<result property="sort"   				column="SORT" />
+		<result property="frstRegistPnttm"   	column="FRST_REGIST_PNTTM" />	
+		<result property="frstRegisterId"   	column="FRST_REGISTER_ID" />	
+		<result property="lastUpdtPnttm"   		column="LAST_UPDT_PNTTM" />	
+		<result property="lastUpduserId"   		column="LAST_UPDUSR_ID" />	
+		<result property="codeCount"   			column="CODE_COUNT" />	
+	</resultMap>
+	
+	<select id="getAuthCd" resultMap="AuthCd" parameterClass="map">
+	/* Auth.getAuthCd */
+		SELECT C.CL_CODE, C.CODE_ID, C.CODE, C.CODE_NM, C.CODE_DC, C.USE_AT, C.SORT, 
+		       C.FRST_REGIST_PNTTM, C.FRST_REGISTER_ID, C.LAST_UPDT_PNTTM, C.LAST_UPDUSR_ID,
+		       (SELECT COUNT(*) FROM TB_LGN_INFO U WHERE U.AUTHRT_CD = C.CODE) AS CODE_COUNT
+		FROM COMTCCMMNDETAILCODE C 
+		WHERE C.USE_AT = 'Y' 
+		  AND C.CL_CODE = 'AUTH'
+		ORDER BY C.SORT DESC
+	</select>
+	
+	<select id="getAuthList" resultMap="AuthListValue" parameterClass="map">
+	/* Auth.getAuthList */
+		SELECT  USERID, AUTHRT_CD, AUTHRT_BGNG_TM, AUTHRT_END_YMD, FRST_RGTR_ID, FRST_REG_DT, LAST_MDFR_ID, LAST_MDFCN_DT
+	        FROM TB_LGN_INFO
+				WHERE 1=1				
+		ORDER BY LAST_MDFCN_DT DESC
+	</select>
+	
+	<select id="getAuthDetailList" resultMap="AuthDetailValue" parameterClass="map">
+	/* Auth.getAuthDetailList */
+	SELECT * FROM(
+		SELECT ROW_NUMBER() OVER(
+			<dynamic>
+				<isNotNull property="sort">
+				    <isNotEmpty property="sort">
+				    	<isEqual property="sort" compareValue="authrtEndYmd">
+				      		ORDER BY AUTHRT_END_YMD $sortValue$
+				        </isEqual>
+				    	<isEqual property="sort" compareValue="hname">
+				   	    	ORDER BY HNAME $sortValue$
+				        </isEqual>
+				    </isNotEmpty>
+				</isNotNull>
+			</dynamic>
+			<isEmpty property="sort">
+			    ORDER BY AUTHRT_END_YMD ASC
+			</isEmpty>			
+<!-- 		ORDER BY LAST_MDFCN_DT DESC -->
+			) AS "ROWNUM"
+			, USERID, AUTHRT_CD, AUTHRT_BGNG_TM, AUTHRT_END_YMD, FRST_RGTR_ID, FRST_REG_DT, LAST_MDFR_ID, LAST_MDFCN_DT, HNAME FROM(
+			SELECT lgn.USERID, lgn.AUTHRT_CD, lgn.AUTHRT_BGNG_TM, lgn.AUTHRT_END_YMD, lgn.FRST_RGTR_ID, lgn.FRST_REG_DT, lgn.LAST_MDFR_ID, lgn.LAST_MDFCN_DT,
+				mem.HNAME
+		        FROM TB_LGN_INFO lgn, biozine.UNITY_MEMBER mem
+					WHERE 1=1
+						AND trim(AUTHRT_CD)= #authrtCd#
+						AND mem.USERID = lgn.USERID
+					    <isNotNull property="searchInput1"><isNotEmpty property="searchInput1">
+					    	<isEqual property="search1" compareValue="all">
+				        		AND (
+				        		mem.HNAME LIKE '%' || #searchInput1# || '%' OR
+				        		lgn.USERID LIKE '%' || #searchInput1# || '%'
+				        		)
+				        	</isEqual>
+					    	<isEqual property="search1" compareValue="hname">
+				        		AND mem.HNAME LIKE '%' || #searchInput1# || '%'
+				        	</isEqual>
+					    	<isEqual property="search1" compareValue="userid">
+				        		AND lgn.USERID LIKE '%' || #searchInput1# || '%'
+				        	</isEqual>
+						</isNotEmpty></isNotNull>
+<!-- 						<dynamic> -->
+<!-- 						<isNotNull property="sort"> -->
+<!-- 						    <isNotEmpty property="sort"> -->
+<!-- 						    	<isEqual property="sort" compareValue="authrtEndYmd"> -->
+<!-- 						        ORDER BY lgn.AUTHRT_END_YMD $sortValue$ -->
+<!-- 						        </isEqual> -->
+<!-- 						    	<isEqual property="sort" compareValue="hname"> -->
+<!-- 						        ORDER BY mem.HNAME $sortValue$ -->
+<!-- 						        </isEqual> -->
+<!-- 						    </isNotEmpty> -->
+<!-- 						</isNotNull> -->
+<!-- 						</dynamic> -->
+<!-- 						<isEmpty property="sort"> -->
+<!-- 						    ORDER BY LAST_MDFCN_DT DESC -->
+<!-- 						</isEmpty>					 -->
+					)T2
+				)T1
+				WHERE "ROWNUM" BETWEEN (($cPage$-1)*$intListCnt$)+1 AND ($cPage$*$intListCnt$)
+	</select>
+	
+	<select id="getAuthDetailCnt" resultClass="int" parameterClass="map">
+	/* Auth.getAuthDetailCnt */
+		SELECT COUNT(*)
+		        FROM TB_LGN_INFO lgn, biozine.UNITY_MEMBER mem
+					WHERE 1=1
+						AND trim(AUTHRT_CD)= #authrtCd#
+						AND mem.USERID = lgn.USERID
+					    <isNotNull property="searchInput1"><isNotEmpty property="searchInput1">
+					    	<isEqual property="search1" compareValue="all">
+				        		AND (
+				        		mem.HNAME LIKE '%' || #searchInput1# || '%' OR
+				        		lgn.USERID LIKE '%' || #searchInput1# || '%'
+				        		)
+				        	</isEqual>					    
+					    	<isEqual property="search1" compareValue="hname">
+				        	AND mem.HNAME LIKE '%' || #searchInput1# || '%'
+				        	</isEqual>
+					    	<isEqual property="search1" compareValue="userid">
+				        	AND lgn.USERID LIKE '%' || #searchInput1# || '%'
+				        	</isEqual>
+						</isNotEmpty></isNotNull>
+	</select>
+	
+	<select id="getAuthDetailFullCnt" resultClass="int" parameterClass="map">
+	/* Auth.getAuthDetailFullCnt */	
+		SELECT COUNT(*) FROM TB_LGN_INFO lgn, biozine.UNITY_MEMBER mem
+			WHERE 1=1
+				AND trim(AUTHRT_CD)= #authrtCd#
+				AND mem.USERID = lgn.USERID
+	</select>	
+	
+	<update id="updateMoveAuth" parameterClass="map">
+	/* Auth.updateMoveAuth */
+		UPDATE TB_LGN_INFO SET AUTHRT_CD = #authCd#
+		    , LAST_MDFR_ID = #lastMdfrId#
+		    , LAST_MDFCN_DT = SYSDATE		
+			WHERE USERID = #userid#
+	</update>
+	
+	<delete id="deleteAuth" parameterClass="map">
+	/* Auth.deleteAuth */
+		DELETE TB_LGN_INFO
+			WHERE USERID = #userid#
+	</delete>	
+	
+	<update id="updateAuthDate" parameterClass="map">
+	/* Auth.updateAuthDate */
+		UPDATE TB_LGN_INFO SET AUTHRT_END_YMD = TO_DATE(#authrtEndYmd#, 'YYYY-MM-DD')
+		    , LAST_MDFR_ID = #lastMdfrId#
+		    , LAST_MDFCN_DT = SYSDATE
+			WHERE USERID = #userid#
+	</update>	
+	
+	
+</sqlMap>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+	<!-- Properties -->
+	<context:property-placeholder location="classpath:bpsim/config/jdbc/datasource.properties"/>
+
+	<!-- @Transactional -->
+	<tx:annotation-driven transaction-manager="transactionManagerBase"/>
+	<tx:annotation-driven transaction-manager="transactionManagerLink"/>
+
+	<bean id="dataSourceSpied" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<!-- 운영반영시 -->
+		<!-- <property name="jndiName" value="bpsim_datasource" />  -->
+		<!-- Local 개발시 -->
+		<property name="jndiName" value="java:comp/env/bpsim_datasource" />
+	
+	</bean>
+	
+	
+	<bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+		<constructor-arg ref="dataSourceSpied" /> 
+		<property name="logFormatter"> 
+			<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+				<property name="loggingType" value="MULTI_LINE" /> 
+				<property name="sqlPrefix" value="SQL : "/> 
+			</bean> 
+		</property> 
+
+	</bean>
+	
+	<bean id="dataSourceBaseTarget" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+		<constructor-arg ref="dataSourceSpied" />
+		<property name="logFormatter">
+			<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+				<property name="loggingType" value="MULTI_LINE" />
+				<property name="sqlPrefix" value="★★★"/>
+			</bean>
+		</property>
+	</bean>
+
+	<!-- Transaction -->
+	<bean id="transactionManagerBase" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSourceBaseTarget"/>
+	</bean>
+	
+
+	<!-- Ibatis(SqlMapClient) -->
+	<bean id="sqlMapClientBase" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocations">
+			<list>
+				<value>classpath:bpsim/config/sqlmap/sqlmap-config.xml</value>
+			</list>
+		</property>
+		<property name="dataSource" ref="dataSourceBaseTarget"/>
+	</bean>
+		
+	
+
+	<!-- MessageSource -->
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>bpsim.config.messages.var</value>
+				<value>bpsim.config.messages.error</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 
+	C:\KRIBB\workspace\bpsim\src\main\java\bpsim\framework\util\MsgUtils.java
+	 -->
+	<!-- Exception Resolver -->
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop key="java.lang.NullPointerException">/blank</prop>
+				<prop key="java.sql.SQLException">/blank</prop>
+				<prop key="java.lang.Exception">/blank</prop>
+			</props>
+		</property>
+	</bean>		
+
+	<util:properties id="apiPropertie" 						location="classpath:bpsim/config/api/api.properties" />
+	<util:properties id="applicationResourcesProperties" 	location="classpath:bpsim/config/common/ApplicationResources.properties" />
+	
+	<bean id="commonservice"
+          class="bpsim.framework.util.Commonservice">
+    </bean>
+    
+</beans>

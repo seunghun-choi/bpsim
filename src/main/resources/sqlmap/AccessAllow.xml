@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AccessAllow">
+	
+	<!-- 등록 -->
+	<insert id="insert" parameterClass="map">
+	/* AccessAllow.insert */
+		INSERT INTO access_man_allow
+			(ip_addr, reg_id, regdate, description)
+		VALUES
+			(#ip_addr#, #reg_id#, sysdate, #description#)
+	</insert>
+	
+	<!-- 상세보기 -->
+	<select id="getObjectMap" resultClass="hmap" parameterClass="map">
+	/* AccessAllow.getObjectMap */
+		SELECT 
+			ip_addr, 
+			reg_id, 
+			TO_CHAR(regdate,'yyyy-mm-dd') as regdate,
+			NVL(description, '') as description 
+		FROM 
+			access_man_allow
+		WHERE
+			TRIM(ip_addr) = TRIM(#ip_addr#)	
+	</select>
+	
+	<sql id="search">
+		<isNotEmpty property="start_date">
+			<isEmpty property="end_date">
+				AND	TO_CHAR(regdate,'YYYY-MM-DD') <![CDATA[>=]]> #start_date#
+			</isEmpty>
+		</isNotEmpty>
+		<isNotEmpty property="end_date">
+			<isEmpty property="start_date">
+				AND	TO_CHAR(regdate,'YYYY-MM-DD') <![CDATA[<=]]> #end_date#
+			</isEmpty>
+		</isNotEmpty>
+		<isNotEmpty property="end_date">
+			<isNotEmpty property="start_date">
+				AND	TO_CHAR(regdate,'YYYY-MM-DD') between #start_date# and #end_date#
+			</isNotEmpty>
+		</isNotEmpty>	 
+		<isNotEmpty property="s_str">
+		AND ip_addr LIKE '%'||#s_str#||'%'
+		</isNotEmpty>	 
+	</sql>
+	
+	<!-- 카운트 -->
+	<select id="getDataCnt" resultClass="hmap" parameterClass="map">
+	/* AccessAllow.getDataCnt */	
+		SELECT sum(searchCnt) as searchCnt, sum(totalCnt) as totalCnt
+		FROM (
+				SELECT COUNT(*) as searchCnt, 0 as totalCnt
+				FROM access_man_allow
+				WHERE 1=1
+				<include refid="search"/>
+				UNION ALL
+				SELECT 0 as searchCnt, COUNT(*) as totalCnt
+				FROM access_man_allow
+				WHERE 1=1
+		)
+	</select>
+	
+	<!-- 리스트 -->
+	<select id="getList" resultClass="hmap" parameterClass="map">
+	/* AccessAllow.getList */
+		SELECT 
+			row_number() over (ORDER BY ip_addr ASC) rn
+			, ip_addr
+			, reg_id
+			, TO_CHAR(regdate,'yyyy-mm-dd') as regdate
+			, description
+		FROM access_man_allow
+		WHERE 1=1
+		<include refid="search"/>
+		ORDER BY ip_addr ASC
+	</select>
+		
+	<!-- 삭제 -->
+	<delete id="delete" parameterClass="map">
+	/* AccessAllow.delete */	
+		DELETE FROM access_man_allow WHERE ip_addr = #ip_addr#		
+	</delete>
+		
+	<!-- 수정 -->
+	<update id="update" parameterClass="map">
+	/* AccessAllow.update */	
+		UPDATE access_man_allow
+		SET description = #description# 
+		WHERE ip_addr = #ip_addr#		
+	</update>
+	
+</sqlMap>

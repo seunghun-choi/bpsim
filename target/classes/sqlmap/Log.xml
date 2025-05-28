@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Log">
+
+	<resultMap id="LogInfo" class="java.util.HashMap" >
+		<result property="exportSysLogMngNo"	column="EXPRT_SYS_LOG_MNG_NO" />
+		<result property="userid" 				column="USERID" />
+		<result property="acsrNm" 				column="ACSR_NM" />
+		<result property="authrtCd" 			column="AUTHRT_CD" />
+		<result property="codeNm" 				column="CODE_NM" />
+		<result property="acsrIpAddr" 			column="ACSR_IP_ADDR"/>
+		<result property="cntnUrlAddr"			column="CNTN_URL_ADDR" />
+		<result property="cntnDt" 				column="CNTN_DT" />
+	</resultMap>
+	
+	<select id="getLogList" resultMap="LogInfo" parameterClass="map">
+	/* Log.getLogList */
+		SELECT * FROM(
+			SELECT ROW_NUMBER() OVER (ORDER BY CNTN_DT DESC) AS "ROWNUM"
+				, EXPRT_SYS_LOG_MNG_NO, USERID, ACSR_NM, ACSR_IP_ADDR, CNTN_URL_ADDR, CNTN_DT, AUTHRT_CD, CODE_NM
+				FROM(
+					SELECT log.EXPRT_SYS_LOG_MNG_NO, log.USERID, log.ACSR_NM, log.ACSR_IP_ADDR, log.CNTN_URL_ADDR, log.CNTN_DT, log.AUTHRT_CD, detail.CODE_NM
+						FROM TB_EXPRT_SYS_LOG log
+						JOIN TB_LGN_INFO lgn ON log.USERID = lgn.USERID
+						LEFT JOIN COMTCCMMNDETAILCODE detail ON log.AUTHRT_CD = detail.CODE
+				WHERE 1=1
+	            <isNotNull property="cntnUrlAddr"><isNotEmpty property="cntnUrlAddr">
+	                AND log.CNTN_URL_ADDR LIKE '%' || #cntnUrlAddr# || '%'
+	            </isNotEmpty></isNotNull>
+	            <isNotNull property="acsrNm"><isNotEmpty property="acsrNm">
+	                AND log.ACSR_NM LIKE '%' || #acsrNm# || '%'
+	            </isNotEmpty></isNotNull>	            
+	            <isNotNull property="authCd"><isNotEmpty property="authCd">
+	                AND log.AUTHRT_CD LIKE '%' || #authCd# || '%'
+	            </isNotEmpty></isNotNull>
+				
+				<!-- 시작일자, 종료일자 둘 다 있을때 -->
+			    <isNotEmpty property="startDate"><isNotEmpty property="endDate">
+			        AND log.CNTN_DT <![CDATA[>=]]> TO_DATE(#startDate#, 'YYYY-MM-DD') AND log.CNTN_DT <![CDATA[<]]> TO_DATE(#endDate#, 'YYYY-MM-DD') + INTERVAL '1' DAY
+				</isNotEmpty></isNotEmpty>
+				
+			    <!-- 시작일자만 있을때 -->
+			    <isNotEmpty property="startDate"><isEmpty property="endDate">
+			        AND log.CNTN_DT <![CDATA[>=]]> TO_DATE(#startDate#, 'YYYY-MM-DD') AND log.CNTN_DT <![CDATA[<]]> SYSDATE + INTERVAL '1' DAY
+				</isEmpty></isNotEmpty>
+				
+				<!-- 종료일자만 있을때 -->
+			    <isNotEmpty property="endDate"><isEmpty property="startDate">
+			        AND log.CNTN_DT <![CDATA[<]]> TO_DATE(#endDate#, 'YYYY-MM-DD') + INTERVAL '1' DAY
+				</isEmpty></isNotEmpty>				
+				)T2
+			)T1
+			WHERE "ROWNUM" BETWEEN (($cPage$-1)*$intListCnt$)+1 AND ($cPage$*$intListCnt$)
+			ORDER BY CNTN_DT DESC
+	</select>
+	
+	<select id="getLogExcelList" resultMap="LogInfo" parameterClass="map">
+	/* Log.getLogExcelList */
+		SELECT * FROM(
+			SELECT ROW_NUMBER() OVER (ORDER BY CNTN_DT DESC) AS "ROWNUM"
+				, EXPRT_SYS_LOG_MNG_NO, USERID, ACSR_NM, ACSR_IP_ADDR, CNTN_URL_ADDR, CNTN_DT, AUTHRT_CD, CODE_NM
+				FROM(
+					SELECT log.EXPRT_SYS_LOG_MNG_NO, log.USERID, log.ACSR_NM, log.ACSR_IP_ADDR, log.CNTN_URL_ADDR, log.CNTN_DT, log.AUTHRT_CD, detail.CODE_NM
+						FROM TB_EXPRT_SYS_LOG log
+						JOIN TB_LGN_INFO lgn ON log.USERID = lgn.USERID
+						LEFT JOIN COMTCCMMNDETAILCODE detail ON log.AUTHRT_CD = detail.CODE
+				WHERE 1=1
+	            <isNotNull property="cntnUrlAddr"><isNotEmpty property="cntnUrlAddr">
+	                AND log.CNTN_URL_ADDR LIKE '%' || #cntnUrlAddr# || '%'
+	            </isNotEmpty></isNotNull>
+	            <isNotNull property="acsrNm"><isNotEmpty property="acsrNm">
+	                AND log.ACSR_NM LIKE '%' || #acsrNm# || '%'
+	            </isNotEmpty></isNotNull>	            
+	            <isNotNull property="authCd"><isNotEmpty property="authCd">
+	                AND log.AUTHRT_CD LIKE '%' || #authCd# || '%'
+	            </isNotEmpty></isNotNull>
+				
+				<!-- 시작일자, 종료일자 둘 다 있을때 -->
+			    <isNotEmpty property="startDate"><isNotEmpty property="endDate">
+			        AND log.CNTN_DT <![CDATA[>=]]> TO_DATE(#startDate#, 'YYYY-MM-DD') AND log.CNTN_DT <![CDATA[<]]> TO_DATE(#endDate#, 'YYYY-MM-DD') + INTERVAL '1' DAY
+				</isNotEmpty></isNotEmpty>
+				
+			    <!-- 시작일자만 있을때 -->
+			    <isNotEmpty property="startDate"><isEmpty property="endDate">
+			        AND log.CNTN_DT <![CDATA[>=]]> TO_DATE(#startDate#, 'YYYY-MM-DD') AND log.CNTN_DT <![CDATA[<]]> SYSDATE + INTERVAL '1' DAY
+				</isEmpty></isNotEmpty>
+				
+				<!-- 종료일자만 있을때 -->
+			    <isNotEmpty property="endDate"><isEmpty property="startDate">
+			        AND log.CNTN_DT <![CDATA[<]]> TO_DATE(#endDate#, 'YYYY-MM-DD') + INTERVAL '1' DAY
+				</isEmpty></isNotEmpty>				
+				)T2
+			)T1
+			ORDER BY CNTN_DT DESC
+	</select>
+	
+	<select id="getLogListCnt" resultClass="int" parameterClass="map">
+	/* Log.getLogListCnt */	
+		SELECT COUNT(*)
+			FROM TB_EXPRT_SYS_LOG log
+			JOIN TB_LGN_INFO lgn ON log.USERID = lgn.USERID
+			LEFT JOIN COMTCCMMNDETAILCODE detail ON log.AUTHRT_CD = detail.CODE
+				WHERE 1=1
+	            <isNotNull property="cntnUrlAddr"><isNotEmpty property="cntnUrlAddr">
+	                AND log.CNTN_URL_ADDR LIKE '%' || #cntnUrlAddr# || '%'
+	            </isNotEmpty></isNotNull>
+	            <isNotNull property="acsrNm"><isNotEmpty property="acsrNm">
+	                AND log.ACSR_NM LIKE '%' || #acsrNm# || '%'
+	            </isNotEmpty></isNotNull>	            
+	            <isNotNull property="authCd"><isNotEmpty property="authCd">
+	                AND log.AUTHRT_CD LIKE '%' || #authCd# || '%'
+	            </isNotEmpty></isNotNull>	            
+
+				<!-- 시작일자, 종료일자 둘 다 있을때 -->
+			    <isNotEmpty property="startDate"><isNotEmpty property="endDate">
+			        AND log.CNTN_DT <![CDATA[>=]]> TO_DATE(#startDate#, 'YYYY-MM-DD') AND log.CNTN_DT <![CDATA[<]]> TO_DATE(#endDate#, 'YYYY-MM-DD') + INTERVAL '1' DAY
+				</isNotEmpty></isNotEmpty>
+				
+			    <!-- 시작일자만 있을때 -->
+			    <isNotEmpty property="startDate"><isEmpty property="endDate">
+			        AND log.CNTN_DT <![CDATA[>=]]> TO_DATE(#startDate#, 'YYYY-MM-DD') AND log.CNTN_DT <![CDATA[<]]> SYSDATE + INTERVAL '1' DAY
+				</isEmpty></isNotEmpty>
+				
+				<!-- 종료일자만 있을때 -->
+			    <isNotEmpty property="endDate"><isEmpty property="startDate">
+			        AND log.CNTN_DT <![CDATA[<]]> TO_DATE(#endDate#, 'YYYY-MM-DD') + INTERVAL '1' DAY
+				</isEmpty></isNotEmpty>				
+        
+	</select>
+	
+	<select id="getLogFullCnt" resultClass="int" parameterClass="map">
+	/* Log.getLogFullCnt */
+		SELECT COUNT(*) FROM TB_EXPRT_SYS_LOG log
+			JOIN TB_LGN_INFO lgn ON log.USERID = lgn.USERID
+			LEFT JOIN COMTCCMMNDETAILCODE detail ON log.AUTHRT_CD = detail.CODE
+			WHERE 1=1
+	</select>
+	
+	<!-- 접속 정보 Insert -->
+	<insert id="InsertConectHist" parameterClass="map">
+	/*Log.InsertConectHist*/
+		INSERT INTO TB_EXPRT_SYS_LOG
+			(
+			EXPRT_SYS_LOG_MNG_NO
+			, USERID
+			, ACSR_NM
+			, AUTHRT_CD
+			, ACSR_IP_ADDR
+			, CNTN_URL_ADDR
+			, CNTN_DT
+<!-- 			, FRST_RGTR_ID -->
+<!-- 			, FRST_REG_DT -->
+<!-- 			, LAST_MDFR_ID -->
+<!-- 			, LAST_MDFCN_DT -->
+			)
+		VALUES
+			(
+			SEQ_TB_EXPRT_SYS_LOG.NEXTVAL 
+			, #userid#
+			, #acsrNm#
+			, #authrtCd#
+			, #acsrIpAddr#
+			, #cntnUrlAddr#
+			, SYSDATE
+<!-- 			, #frstRgtrId# -->
+<!-- 			, SYSDATE -->
+<!-- 			, #lastMdfrId# -->
+<!-- 			, SYSDATE -->
+			)
+	</insert>
+	
+	
+	
+</sqlMap>

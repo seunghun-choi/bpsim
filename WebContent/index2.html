@@ -1,0 +1,334 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="/css/mng/common.css" rel="stylesheet" type="text/css" />
+<title>FUND Administrator</title>
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript" src="/js/tree.js"></script>
+<script type="text/javascript">
+	 <!--
+	 //레이어 팝업 열기
+	 function openLayer(IdName, tpos, lpos){
+	  var pop = document.getElementById(IdName);
+	  pop.style.display = "block";
+	 }
+	 //레이어 팝업 닫기
+	 function closeLayer(IdName){
+	  var pop = document.getElementById(IdName);
+	  pop.style.display = "none";
+	 }
+	   //-->
+
+</script>
+</head>
+<body>
+
+<div id="wrap">
+	
+	<div id="header">
+    <!--헤더 -->
+    	<h1><img src="/images/mng/common/header/header_logo.gif" width="135" alt="Management SYSTEM" /></h1>
+        <ul class="top_menu">
+        	<li class="m_01_select"><a href="111" onclick=""><span class="blind">사이트관리</span></a></li>
+            <li class="m_02"><a href="222"><span class="blind">뉴스레터</span></a></li>
+        </ul>
+      
+        <div class="header_right">
+       		<span>관리자 님 환영합니다.</span>
+       		<strong><a href="#">로그아웃</a></strong>
+       	</div>
+        
+    
+    <!-- 헤더 끝-->    	
+    </div>
+    
+    <!-- container_area -->
+    <div id="container_area">
+
+    	<!-- left_nav -->
+        <div class="tNav">
+			<ul>
+				<li class="active"><a href="#">메뉴 1</a>
+					<ul>
+						<li><a href="#">메뉴 1-2</a></li>
+						<li><a href="#">메뉴 1-3</a></li>
+					</ul>
+				</li>
+				<li class="active"><a href="#">메뉴 2</a>
+					<ul>
+						<li><a href="#">수신허용(전체)엑셀다운로다운로드다운로드</a></li>
+						<li><a href="#">메뉴 2-2</a></li>
+					</ul>
+				</li>
+				<li class="active"><a href="#">메뉴 2</a>
+					<ul>
+						<li><a href="#">수신허용(전체)엑셀다운로다운로드다운로드</a></li>
+						<li><a href="#">메뉴 2-2</a></li>
+					</ul>
+				</li>
+				<li class="active"><a href="#">메뉴 2</a>
+					<ul>
+						<li><a href="#">수신허용(전체)엑셀다운로다운로드다운로드</a></li>
+						<li><a href="#">메뉴 2-2</a></li>
+					</ul>
+				</li>
+				<li class="active"><a href="#">메뉴 2</a>
+					<ul>
+						<li><a href="#">수신허용(전체)엑셀다운로다운로드다운로드</a></li>
+						<li><a href="#">메뉴 2-2</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<!-- //left_nav -->
+
+		<!-- container -->
+		<div id="container">
+			<!-- 타이틀 및 네비게이션 -->
+			<div class="page_nav_box">
+				<h3>기업회원접수처리</h3>
+				<div class="page_nav">사이트관리 > 메뉴1 > <span>메뉴 1-2</span></div>
+			</div>
+			
+			<!-- container_body -->
+			<div class="container_body">
+			
+
+			
+			<!-- 상단 검색 -->
+			<div class="box_area">
+				<table border="0" cellspacing="0" cellpadding="0" class="table_sea_1">
+				<tbody>
+				<tr>
+					<th>구분</th>
+					<td colspan="3">
+						<form name="dvsn_form"  action="./mng/member/memberMngList.do" method="post" >
+						    <span class="selInlin">
+						        <select style="width:100px;" name="user_dvsn_cd" id="user_dvsn_cd" onchange="selectCombo(dvsn_form)">
+						            <option value="" >구분:전체</option>
+						            <option value="M001"  >대표자명</option>
+						            <option value="M002"  >기업</option>
+						        </select>
+						    </span><input type="text" class="iText" id="word" name="word" size="30" value=""  style="width:63%;"/> 
+						   <a href="검색"><img src="/images/mng/common/button/btn_seach.gif" width="52" height="21" alt="검색" /></a>
+						</form> 
+					</td>
+				</tr>
+				<tr>
+				    <th>업종</th>
+				    <td><input type="text" id="sch_kind" name="sch_kind" size="30" value="" class="itxt" /></td>
+				    <th>설립일</th>
+				    <td><input type="text" id="sch_open" name="sch_open" size="30" value="" class="itxt" /></td>
+				</tr>
+				<tr>
+				    <th>주요상품</th>
+				    <td><input type="text" id="sch_mnpd" name="sch_mnpd" size="30" value="" class="itxt" /></td>
+				    <th>홈페이지</th>
+				    <td><input type="text" id="sch_web" name="sch_web" size="30" value="" class="itxt" /></td>
+				</tr>
+				</tbody>
+				</table>
+			</div>
+			<!-- //상단 검색 -->
+			
+			<!-- list -->
+			<table class="tbl_type_list" summary="" cellpadding="0" cellspacing="0">
+			<caption>공지사항</caption>
+			<colgroup>
+				<col  width="60px"/>
+			    <col  />
+			    <col  />
+			    <col  />
+			    <col  />
+			    <col  />
+			    <col  />
+			    <col  />
+			    <col  />
+			    <col  />
+			    <col  />
+			</colgroup>
+			<thead>
+			<tr>
+			 	<th scope="col" class="th_left">번호</th>
+			 	<th scope="col"><span>구분</span></th>
+				<th scope="col"><span>아이디</span></th>
+			    <th scope="col"><span>이름</span></th>
+			    <th scope="col"><span>이메일</span></th>
+			    <th scope="col"><span>지역</span></th>
+			    <th scope="col"><span>연락처</span></th>
+			    <th scope="col"><span>남/여</span></th>
+			    <th scope="col"><span>전문가 여부</span></th>
+			    <th scope="col"><span>가입일</span></th>
+			    <th scope="col"><span>탈퇴일</span></th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr align="center">
+				<td>13</td>
+				<td>일반</td>
+				<td><b><a href="./mng/member/memberMngView.do?user_id=park&user_dvsn_cd=M001">park</a></b></td>
+				<td><b><a href="./mng/member/memberMngView.do?user_id=park&user_dvsn_cd=M001">박진혁</a></b></td>																   
+				<td>jinhyuk87@a2m.co.kr</td>
+				<td>서울</td>
+				<td>--</td>
+				<td></td>
+				<td>N</td>
+				<td>2011-11-23</td>
+				<td>2011.12.01</td>
+			</tr>
+			<tr align="center">
+				<td>12</td>
+				<td>일반</td>
+				<td><b><a href="./mng/member/memberMngView.do?user_id=meri&user_dvsn_cd=M001">meri</a></b></td>
+				<td><b><a href="./mng/member/memberMngView.do?user_id=meri&user_dvsn_cd=M001">이메리</a></b></td>																   
+				<td>meri@meri.co.kr</td>
+				<td>충남</td>
+				<td>--</td>
+				<td></td>
+				<td>N</td>
+				<td>2011-11-30</td>
+				<td>2011.12.01</td>
+			</tr>
+			</tbody>
+			</table>
+			<!-- //list -->
+			
+			<!-- paginate -->
+			<div class="paginate">
+				<a href="#" class="pre">이전페이지</a>
+				<a href="#">1</a>
+				<a href="#">2</a>
+				<a href="#">3</a>
+				<a href="#">4</a>
+				<a href="#">5</a>
+				<strong>6</strong>
+				<a href="#">7</a>
+				<a href="#">8</a>
+				<a href="#">9</a>
+				<a href="#">10</a>
+				<a href="#">11</a>
+				<a href="#" class="next">다음페이지</a>
+			</div>
+			<!-- //paginate -->
+			
+			<!-- write_view -->
+			<table class="tbl_type_input" summary="" cellpadding="0" cellspacing="0">
+			<caption>일반정보</caption>
+			<colgroup>
+				<col  width="60px"/>
+			    <col  />
+			    <col  />
+			    <col  />
+			    <col  />
+			    <col  />
+			    <col  />
+			    <col  />
+			    <col  />
+			    <col  />
+			    <col  />
+			</colgroup>            
+			<tr>
+				<th>사업등록번호</th>
+				<td colspan="3"><input type="text" id="sch_kind" name="sch_kind" size="30" value="" class="itxt" /></td>
+			</tr>
+			<tr>
+				<th>기관분류</th>
+				<td colspan="3">
+					<form name="dvsn_form"  action="./mng/member/memberMngList.do" method="post" >
+					    <span class="selInlin">
+					        <select style="width:100px;" name="user_dvsn_cd" id="user_dvsn_cd" onchange="selectCombo(dvsn_form)">
+					            <option value="" >구분:전체</option>
+					            <option value="M001"  >대표자명</option>
+					            <option value="M002"  >기업</option>
+					        </select>
+					    </span>                            
+					</form>
+				</td>
+			</tr>
+			<tr>
+				<th>비밀번호</th>
+				<td><input type="text" id="sch_kind" name="sch_kind" size="30" value="" class="itxt" /></td>
+				<th>비밀번호확인</th>
+				<td><input type="text" id="sch_kind" name="sch_kind" size="30" value="" class="itxt" /></td>
+			</tr>
+			<tr>
+				<th>사업체구분</th>
+				<td colspan="3">
+					<form name="dvsn_form"  action="./mng/member/memberMngList.do" method="post" >
+					    <span class="selInlin">
+					        <select style="width:100px;" name="user_dvsn_cd" id="user_dvsn_cd" onchange="selectCombo(dvsn_form)">
+					            <option value="" >구분:전체</option>
+					            <option value="M001"  >대표자명</option>
+					            <option value="M002"  >기업</option>
+					        </select>
+					    </span> 
+					    <span class="selInlin">
+					        <select style="width:100px;" name="user_dvsn_cd" id="user_dvsn_cd" onchange="selectCombo(dvsn_form)">
+					            <option value="" >구분:전체</option>
+					            <option value="M001"  >대표자명</option>
+					            <option value="M002"  >기업</option>
+					        </select>
+					    </span> 
+					    <span class="selInlin">
+					        <select style="width:100px;" name="user_dvsn_cd" id="user_dvsn_cd" onchange="selectCombo(dvsn_form)">
+					            <option value="" >구분:전체</option>
+					            <option value="M001"  >대표자명</option>
+					            <option value="M002"  >기업</option>
+					        </select>
+					    </span>                          
+					</form>
+				</td>
+			</tr>
+			<tr>
+				<th>법인번호</th>
+				<td colspan="3">
+			    <form name="dvsn_form"  action="#" method="post" >
+			        <span class="selInlin" style="margin-bottom:2px">
+			            <select style="width:400px;" name="user_dvsn_cd" id="user_dvsn_cd" onchange="selectCombo(dvsn_form)">
+			                <option value="" >구분:전체</option>
+			                <option value="M001"  >대표자명</option>
+			                <option value="M002"  >기업</option>
+			            </select>
+			        </span>                            
+			    </form>
+			    <form name="dvsn_form"  action="#" method="post" >
+			        <span class="selInlin" style="margin-bottom:2px">
+			            <select style="width:400px;" name="user_dvsn_cd" id="user_dvsn_cd" onchange="selectCombo(dvsn_form)">
+			                <option value="" >구분:전체</option>
+			                <option value="M001"  >대표자명</option>
+			                <option value="M002"  >기업</option>
+			            </select>
+			        </span>                            
+			    </form>
+			    <form name="dvsn_form"  action="#" method="post" >
+			        <span class="selInlin">
+			            <select style="width:400px;" name="user_dvsn_cd" id="user_dvsn_cd" onchange="selectCombo(dvsn_form)">
+			                <option value="" >구분:전체</option>
+			                <option value="M001"  >대표자명</option>
+			                <option value="M002"  >기업</option>
+			            </select>
+			        </span>                            
+			    </form>
+			    </td>
+			</tr>
+			</tbody>
+			</table>
+			<!-- //write_view -->
+			
+			</div>   
+			<!-- //container_body -->
+			
+		</div>
+        <!-- //container -->
+        
+	</div>   
+    <!-- //container_area -->
+
+
+</div>
+
+
+</body>
+</html>

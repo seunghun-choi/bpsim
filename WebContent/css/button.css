@@ -1,0 +1,197 @@
+@charset "utf-8";
+
+.btn{height:3.6rem; background:#fff; color:var(--gray-600); border:1px solid var(--gray-400); padding:0 var(--interval-md); font-size:var(--font-md); border-radius:4px; box-sizing: border-box; min-width: 6rem; box-sizing: border-box; font-weight:500;}
+table .btn{height:2.8rem;}
+.btn-login{background:var(--color-primary); color:var(--white); display: block; width:100%; font-size:var(--font-md); border:none; font-weight:700; border-radius: 0.4rem; height:4.5rem; line-height:4.5rem;}
+
+.btn-logout{float:right; display: inline-block; margin-left: 1.5rem; background:#FFF; color:#555; font-size:var(--font-lg); border:none; font-weight:500; border-radius: 4px; height:2.6rem; line-height:2rem; border:1px solid #AAA;}
+
+.btn-task-type1{background:var(--color-secondary); color:var(--white); border:none; font-weight:600;}
+.btn-task-type2{background:var(--white); color:var(--color-secondary); border:1px solid var(--color-secondary);} 
+.btn-task-type3{background:var(--color-secondary); color:var(--white); border:none; border-radius: 25px; height:3.2rem; padding:0.6rem 2rem 0.6rem 1.5rem; font-size:var(--font-xl); font-weight:600;}
+.btn-task-type3 .ico n{width:1.8rem; height:1.8rem;}
+.btn-remove{color:var(--color-error); border:1px solid var(--color-error);}
+.btn-reject{color:var(--color-error); border:1px solid var(--color-error);}
+
+.iconType{display:inline-flex; padding:0 1rem 0 0.5rem; line-height:2.4rem; box-sizing: border-box; vertical-align: middle; align-items:center;}
+
+ul[class='btn-list-type^']{box-sizing:border-box; display:table; table-layout:fixed;}
+.btn-list-type1 li, .btn-list-type2 li{display: table-cell;}
+.btn-list-type1 li a, .btn-list-type2 li a{display:inline-block; background-color:#fff; color:#707070; font-size:var(--font-lg); font-weight:500; padding:1rem 1.5rem; border-right:1px solid var(--gray-300); border-top:1px solid var(--gray-300); border-bottom:1px solid var(--gray-300);}
+.btn-list-type2 li a{font-weight:700;}
+.btn-list-type1 li.on a{background-color:var(--color-secondary); color:var(--white); border:1px solid var(--color-secondary); font-weight:700;}
+.btn-list-type2 li.on a{background-color:var(--gray-300); color:var(--primary-text); border:1px solid var(--gray-300); font-weight:500;}
+.btn-list-type1 li:first-child a, .btn-list-type2 li:first-child a{border-top-left-radius:4px; border-bottom-left-radius:4px;}
+.btn-list-type1 li:last-child a, .btn-list-type2 li:last-child a{border-top-right-radius:4px; border-bottom-right-radius:4px;}
+
+.delete .icon{filter: invert(36%) sepia(98%) saturate(1966%) hue-rotate(338deg) brightness(108%) contrast(88%);}
+
+.btn-icon{
+	width:3.6rem;
+	height:3.6rem;
+	background:transparent;
+	border:0;
+	border-radius: 0;
+	position:relative;
+}
+
+.btn-icon span[class^='icon']{
+	display: inline-block;
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:50%;
+	left:50%;
+	transform: translate(-50%, -50%);
+}
+
+.btn-icon .icon_x{
+	filter: invert(51%) sepia(0%) saturate(2878%) hue-rotate(29deg) brightness(86%) contrast(94%);
+}
+
+
+
+/* pagination */
+.page_list {
+    display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	    -ms-flex-pack: center;
+	        justify-content: center;
+	padding: 2rem 0 4rem;
+	align-items: center;
+}
+
+.page_list > li{
+	display: inline-block;
+	margin-right:1rem;
+}
+
+.pagination button[class^='button'] {
+	position: relative;
+	width: 2.8rem;
+	height: 2.8rem;
+	border-radius: 0.4rem;
+	border: 1px solid var(--gray-400);
+    background-color:#fff;
+}
+
+.pagination button[class^='button']::before {
+	display: inline-block;
+    width:2.4rem;
+    height:2.4rem;
+    background-size: contain;
+    filter: invert(56%) sepia(18%) saturate(213%) hue-rotate(192deg) brightness(94%) contrast(90%);
+}
+
+.pagination button[class^='button']:before {
+	vertical-align: top;
+	content: '';
+}
+
+.pagination button[class^='button']:disabled {
+	opacity: 0.4;
+	cursor: default;
+}
+
+.pagination .button_first:before, .pagination .button_last:before{ 
+	background-image: url(../img/icon_btnFirst.svg);
+}
+
+.pagination .button_previous:before, .pagination .button_next:before{
+	background-image: url(../img/icon_btnPrev.svg);
+}
+
+
+.pagination .button_next:before,
+.pagination .button_last:before {
+	-webkit-transform: rotate(180deg);
+	        transform: rotate(180deg);
+}
+
+.pagination .page_link {
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	position: relative;
+	display: block;
+	background-color:var(--white);
+	min-width: 2.8rem;
+	height: 2.8rem;
+	border: 1px solid var(--gray-400);
+	border-radius: 0.4rem;
+	padding: 0 1rem;
+	font-size: var(--font-lg);
+	font-weight: 700;
+	line-height: 2.8rem;
+	color: var(--secondary-text);
+	text-align: center;
+	font-weight: 500;
+}
+
+.pagination li:last-child .page_link {
+    margin-right:0;
+}
+
+.pagination .page.on .page_link {
+    background-color:var(--color-secondary);
+    border-color: var(--color-secondary);
+    color: var(--white);
+    font-weight: 600;
+}
+
+/* checkBox : button_checkbox_wrap */
+.button_checkbox_wrap{
+	display: inline-block;
+	width:3.6rem;
+	height:3.6rem;
+}
+
+.button_checkbox_wrap label{
+	display: inline-block;
+	height:100%;
+	width:100%;
+	position:relative;
+	cursor: pointer;
+}
+
+.button_checkbox_wrap label::before{
+	content:'';
+	display: inline-block;
+	width:1.6rem;
+	height:1.6rem;
+	border-radius:0.2rem;
+	border:1px solid var(--gray-dark);
+	background-color:var(--white);
+	box-sizing: border-box;
+	position:absolute;
+	left:1rem;
+	top:1rem;
+}
+
+.button_checkbox_wrap label::after{
+	content:'';
+	display: inline-block;
+	width:3.6rem;
+	height:3.6rem;
+	position:absolute;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+}
+
+.button_checkbox_wrap input[type="checkbox"]:checked ~ label::before{
+	border:1px solid var(--color-secondary);
+	background-color:var(--color-secondary);
+}
+
+.button_checkbox_wrap input[type="checkbox"]:checked ~ label::after{
+	background-image:url(../img/icon_check.svg);
+	background-size:1.6rem;
+	background-repeat:no-repeat;
+	background-position: center;
+	filter: invert(100%) sepia(0%) saturate(7489%) hue-rotate(163deg) brightness(106%) contrast(99%);
+}

@@ -1,0 +1,34 @@
+User-agent: *
+
+Disallow: /InnoDS/
+Disallow: /SynapEditor/
+Disallow: /sn3hcv/
+Disallow: /innorix/
+Disallow: /InnoAP/
+Disallow: /fonts/
+Disallow: /file/
+Disallow: /Dext5/
+Disallow: /css/
+Disallow: /mng/
+Disallow: /skins/
+Disallow: /favicon.ico
+Disallow: /sidebar.json
+Disallow: /*.html$
+Disallow: /*.jsp$
+Disallow: /*.htm$
+Disallow: /*.xml$
+Disallow: /*.properties$
+Disallow: /*.pdf$
+
+Allow: /InnoDS/data/upload/research/*.pdf$
+Allow: /InnoDS/data/upload/company/*.pdf$
+Allow: /InnoDS/data/upload/notice/*.pdf$
+Allow: /InnoDS/data/upload/semina/*.pdf$
+Allow: /InnoDS/data/upload/bt_youtube/*.pdf$
+Allow: /InnoDS/data/upload/news/*.pdf$
+Allow: /InnoDS/data/upload/tech_rep/*.pdf$
+Allow: /InnoDS/data/upload/tech/*.pdf$
+Allow: /InnoDS/data/upload/policy_rep/*.pdf$
+Allow: /InnoDS/data/upload/industry/*.pdf$
+Allow: /InnoDS/data/upload/system/*.pdf$
+Allow: /InnoDS/data/upload/patent/*.pdf$

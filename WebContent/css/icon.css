@@ -1,0 +1,73 @@
+@charset "utf-8";
+
+/* icon */
+.icon{display:inline-block; width:2.4rem; height:2.4rem; background-size:contain; background-repeat: no-repeat; background-position:center; vertical-align:middle; line-height:2.4rem;}
+.icon_write{background-image:url(../img/icon_write.svg); filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(53deg) brightness(107%) contrast(102%); margin-right:0.5rem; margin-top:-0.2rem;}
+.icon_plus{vertical-align: middle; background-image:url(../img/icon_plus.svg); filter: invert(49%) sepia(16%) saturate(1777%) hue-rotate(166deg) brightness(100%) contrast(89%); margin-top:-1px;}
+.btn-task-type1 .icon_plus{filter: invert(100%) sepia(0%) saturate(7500%) hue-rotate(3deg) brightness(106%) contrast(100%);}
+.icon_dashboard{background-image:url(../img/icon_dashboard.svg);}
+.icon_mail{background-image:url(../img/icon_mail.svg);}
+.icon_community{background-image:url(../img/icon_community.svg);}
+.icon_hr{background-image:url(../img/icon_hr.svg);}
+.icon_calendar{background-image:url(../img/icon_calendar.svg);}
+.icon_report{background-image:url(../img/icon_report.svg);}
+.icon_account{background-image:url(../img/icon_account.svg);}
+.icon_contract{background-image:url(../img/icon_contract.svg);}
+.icon_stock{background-image:url(../img/icon_stock.svg);}
+.icon_approval{background-image:url(../img/icon_approval.svg);}
+.icon_down{background-image:url(../img/icon_down.svg);}
+.icon_user_line{background-image:url(../img/icon_user_line.svg);}
+.icon_alarm{background-image:url(../img/icon_alarm.svg);}
+.icon_logout{background-image:url(../img/icon_logout.svg);}
+.icon_x{background-image:url(../img/icon_x.svg);}
+.icon_search{background-image:url(../img/icon_search.svg);}
+.icon_refresh{background-image: url(../img/icon_refresh.svg);}
+.icon_hangeul{background-image: url(../img/icon_hangeul.svg);}
+.icon_download{background-image: url(../img/icon_download.svg);}
+.icon_request{background-image:url(../img/icon_request.svg);}
+.icon_signup{background-image: url(../img/icon_signup.svg);}
+.icon_hold{background-image:url(../img/icon_hold.svg);}
+.icon_pdf{background-image:url(../img/icon_pdf.svg);}
+.icon_ppt{background-image:url(../img/icon_ppt.svg);}
+.icon_jpg{background-image:url(../img/icon_jpg.svg);}
+.icon_word{background-image:url(../img/icon_word.svg);}
+.icon_txt{background-image:url(../img/icon_txt.svg);}
+.icon_png{background-image:url(../img/icon_png.svg);}
+.icon_excel{background-image: url(../img/icon_excel.svg);}
+.icon_pt{background-image:url(../img/icon_pt.svg);}
+.icon_data{background-image:url(../img/icon_data.svg);}
+.icon_english{background-image:url(../img/icon_english.svg);}
+.icon_japanese{background-image:url(../img/icon_japanese.svg);}
+.icon_chinese{background-image:url(../img/icon_chinese.svg);}
+.icon_etc{background-image:url(../img/icon_etc.svg);}
+.icon_file_img{background-image:url(../img/icon_file_img.svg);}
+.icon_edu{background-image:url(../img/icon_edu.svg);}
+.icon_clock{background-image:url(../img/icon_clock.svg);}
+.icon_document{background-image:url(../img/icon_document.svg);}
+.icon_documentline{background-image:url(../img/icon_documentline.svg);}
+.icon_upload{background-image:url(../img/icon_upload.svg);}
+.icon_user_line{background-image:url(../img/icon_user_line.svg);}
+.icon_up{background-image:url(../img/icon_down.svg); transform: rotate(180deg); margin-top:-0.2rem;}
+.icon_triangle{background-image:url(../img/icon_triangle.svg);}
+.icon_nofile{background-image:url(../img/icon_nofile.svg);}
+
+
+
+
+
+
+.icon_clip{
+    display: inline-block;
+    width:2rem;
+    height:2rem;
+    text-indent: -9999px;
+    background-image:url(../img/icon_clip.svg);
+    background-size:contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.btn .icon{
+    width:24px;
+    height:24px;
+}

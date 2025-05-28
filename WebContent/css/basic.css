@@ -1,0 +1,401 @@
+@charset "utf-8";
+
+@import url(button.css);
+@import url(pretendard.css);
+@import url(icon.css);
+@import url(common.css);
+
+
+
+/* 공통 변수 */
+:root {
+    /* color */
+    --white:#fff;
+    --blackcolor:#000;
+    --gray:#878a99;
+    --gray-dark:#343a40;
+    --gray-100:#f3f6f9;
+    --gray-200:#eff2f7;
+    --gray-300:#e9ebec;
+    --gray-400:#ced4da;
+    --gray-500:#adb5bd;
+    --gray-600:#878a99;
+    --gray-700:#495057;
+    --gray-800:#343a40;
+    --gray-900:#212529;
+    --color-primary:#ff6000;
+    --color-secondary:#428bca;
+    --color-seccess:#0ab39c;
+    --color-info:#299cdb;
+    --color-error:#f06548;
+    --color-warning:#f7b84b;
+    --color-background:#f3f3f9;
+    --color-border:#e9ebec;
+    --color-tableHeader:#f3f6f9;
+    --color-point:#3577f1;
+    --color-red:#f05248;
+    --color-orange:#f1963b;
+    --color-yellow:#f7b84b;
+    --color-green:#0ab39c;
+    --color-blue:#3577f1;
+    --color-cyan:#299cdb;
+    --color-indigo:#405189;
+    --color-purple:#6559cc;
+    --color-pink:#f672a7;
+    --color-teal:#02a8b5;
+
+
+
+
+    /* text-color */
+    --primary-text:#333;
+    --secondary-text:#818181;
+    --success-text:#099885;
+    --info-text:#2385ba;
+    --error-text:#f06548;
+    --warning-text:#d29c40;
+
+
+    /* line 색상 */
+    /* --line-gray-color:#c0c0c0;
+    --list-gary-color:#F9F9F9;
+    --gray-font-color:#555; */
+    
+    /* 테이블 색상 */
+    /* --th-color: #F2F2F2;
+    --table-line-color:#DDDDDD; */
+
+    /* 간격 */
+    --interval-xs: 0.5rem;
+    --interval-sm: 0.8rem;
+    --interval-md: 1rem;
+    --interval-lg: 2rem;
+    --interval-xl: 3rem;
+    --interval-xxl: 4rem;
+
+    /* 폰트 사이즈 */
+    --font-xs: 1rem;
+    --font-sm: 1.2rem;
+    --font-md: 1.3rem;
+    --font-lg: 1.4rem;
+    --font-xl: 1.6rem;
+    --font-xxl: 1.7rem;
+    --font-xxxl: 2.4rem;
+}
+
+
+
+/* Reset */
+html,
+body { height: 100%; } 
+* { font-family: 'Pretendard'; } 
+html { font-size:10px; line-height: 10px;}
+* { outline: 0 !important; } 
+html,
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+div,
+p,
+blockquote,
+pre,
+code,
+address,
+ul,
+ol,
+li,
+menu,
+nav,
+section,
+article,
+aside,
+dl,
+dt,
+dd,
+table,
+thead,
+tbody,
+tfoot,
+label,
+caption,
+th,
+td,
+form,
+fieldset,
+legend,
+hr,
+input,
+button,
+textarea,
+object,
+figure,
+figcaption { margin: 0; padding: 0; } 
+html,
+body { width: 100%; background: #fff; } 
+
+body { width: 100%; -webkit-text-size-adjust: none; word-wrap: break-word; word-break: break-all; } 
+body,
+input,
+select,
+textarea,
+button { border: none; color: #727272; } 
+ul,
+ol,
+li { list-style: none; } 
+table { width: 100%; border-spacing: 0; border-collapse: collapse; } 
+img,
+fieldset { border: 0; } 
+address,
+cite,
+code,
+em { font-style: normal; font-weight: normal; } 
+label,
+img,
+input,
+select,
+textarea,
+button { vertical-align: middle; } 
+.hide,
+caption,
+legend { line-height: 0; font-size: 0; overflow: hidden; } 
+hr { display: none; } 
+main,
+header,
+section,
+nav,
+footer,
+aside,
+article,
+figure { display: block; } 
+a { color: #000; text-decoration: none; cursor: pointer; } 
+body,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ul,
+ol,
+li,
+dl,
+dt,
+dd,
+table,
+th,
+td,
+form,
+fieldset,
+legend,
+input,
+textarea,
+button,
+
+figure { margin: 0; padding: 0; line-height: normal; vertical-align: baseline; } 
+ul,
+li { list-style-type: none; margin: 0; padding: 0; } 
+
+select { -webkit-appearance: none; -moz-appearance: none; appearance: none; background: #fff url("../img/icon_down_gray.svg") no-repeat; background-color: rgb(255, 255, 255); background-position-x: 96%; background-position-y: center; background-size: 2.4rem;} 
+
+select::-ms-expand { display: none; } 
+
+select option { padding: 0.5rem; } 
+
+button,
+input[type="submit"] { cursor: pointer; } 
+
+select, input[type="text"], input[type="number"], input[type="tel"], input[type="email"], input[type="password"]{
+    min-width:8rem; border:1px solid var(--gray-400); border-radius:4px;
+    height:3.7rem;
+    line-height:3.7rem;
+    padding-left:10px;
+    color:#111;
+    font-size:1.3rem;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator{
+    -webkit-appearance: :none;
+    -moz-appearance:none;
+    appearance:none;
+    background-color:#fff;
+    background-image:url(../img/icon_calendar_gray.svg);
+    background-size:1.9rem;
+    background-repeat: no-repeat;
+    background-position:97%;
+    position:relative;
+    cursor: pointer;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator{
+    -webkit-appearance: :none;
+    -moz-appearance:none;
+    appearance:none;
+    background-color:#fff;
+    background-image:url(../img/icon_updown.svg);
+    background-size:1.8rem;
+    background-repeat:no-repeat;
+    background-position:97%;
+    position:relative;
+    cursor: pointer;
+}
+
+input[type='date']::before, input[type='time']::before {
+    content: attr(data-placeholder);
+    width: clac(100% - 5rem);
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    margin-left:1rem;
+    background:var(--white);
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: #707070;
+}
+
+input[type='date']:focus::before,
+input[type='date']:valid::before,
+input[type='time']:focus::before,
+input[type='time']:valid::before  {
+  display: none;
+}
+
+
+
+
+
+/*grid*/
+.flex { display: flex; justify-content: space-between; align-items: center;} 
+.f1 { flex: 1; } 
+.f2 { flex: 2; } 
+.f3 { flex: 3; } 
+.f4 { flex: 4; } 
+.f5 { flex: 5; } 
+
+/* display style */
+.dsp_none,
+.hide { display: none; } 
+.dsp_inblock { display: inline-block; } 
+.dsp_block { display: block; } 
+
+/* align style */
+.txt_left { text-align: left !important; } 
+.txt_center { text-align: center !important; } 
+.txt_right { text-align: right !important; } 
+
+/* none Style */
+.pd_none { padding: 0 !important; } 
+.mg_none { margin: 0px !important; } 
+
+/* 버튼 위치 flex 추가*/
+.flex_end { display: flex; justify-content: flex-end; } 
+.flex_start { display: flex; justify-content: flex-start; align-items: center;} 
+.flex_between { display: flex; justify-content: space-between; } 
+.flex_center { display: flex; justify-content: center; } 
+
+.screenout { display: none; } 
+.blind{position: absolute; clip: rect(0, 0, 0, 0); width: 1px; height: 1px; margin: -1px; overflow: hidden;}
+
+/* font */
+html{font-weight:400; color:#333;}
+.font48{font-size:4.8rem; font-weight:500;}
+.font36{font-size:3.65rem; font-weight:500;}
+.font24{font-size:2.4rem; font-weight:500;}
+.font23{font-size:2.3rem; font-weight:500;}
+.font22{font-size:2.2rem; font-weight:500;}
+.font21{font-size:2.1rem; font-weight:500;}
+.font20{font-size:2rem; font-weight:500;}
+.font19{font-size:1.9rem; font-weight:500;}
+.font18{font-size:1.8rem; font-weight:500;}
+.font17-m{font-size:1.7rem; font-weight:500;}
+.font17{font-size:1.7rem;}
+.font16-sb{font-size:1.6rem; font-weight:600;}
+.font16-m{font-size:1.6rem; font-weight:500;}
+.font16{font-size:1.6rem;}
+.font15-m{font-size:1.5rem; font-weight:500;}
+.font15{font-size:1.5rem;}
+.font14-b{font-size:1.4rem; font-weight:700;}
+.font14-m{font-size:1.4rem; font-weight:500;}
+.font14{font-size:1.4rem;}
+.font13-b{font-size:1.3rem; font-weight:500;}
+.font13{font-size:1.3rem;}
+.font12{font-size:1.2rem;}
+.font11-m{font-size:1.1rem; font-weight:500;}
+.font11{font-size:1.1rem;}
+.font10{font-size:1rem;}
+
+
+/* basic-color */
+.white{color:#fff;}
+.black{color:#000;}
+.gray{color:#878a99;}
+.gray-dark{color:#343a40;}
+.gray-100{color:#f3f6f9;}
+.gray-200{color:#eff2f7;}
+.gray-300{color:#e9ebec;}
+.gray-400{color:#ced4da;}
+.gray-500{color:#adb5bd;}
+.gray-600{color:#878a99;}
+.gray-700{color:#495057;}
+.gray-800{color:#343a40;}
+.gray-900{color:#212529;}
+
+/* main-color */
+.color-primary{color:#ff6000;}
+.color-secondary{color:#428bca;}
+.color-seccess{color:#0ab39c;}
+.color-info{color:#299cdb;}
+.color-error{color:#f06548;}
+.color-warning{color:#f7b84b;}
+.color-background{color:#f3f3f9;}
+.color-border{color:#e9ebec;}
+.color-tableHeader{color:#f3f6f9;}
+
+/* point-color */
+.red{color:#f05248;}
+.orange{color:#f1963b;}
+.yellow{color:#f7b84b;}
+.green{color:#0ab39c;}
+.blue{color:#3577f1;}
+.cyan{color:#299cdb;}
+.indigo{color:#405189;}
+.purple{color:#6559cc;}
+.pink{color:#f672a7;}
+.teal{color:#02a8b5;}
+
+/* text-color */
+.primary-text{color:#333;}
+.secondary-text{color:#818181;}
+.success-text{color:#099885;}
+.info-text{color:#2385ba;}
+.error-text{color:#f06548;}
+.warning-text{color:#d29c40;}
+
+
+.mgt20{margin-top:2rem;}
+
+.ellipsis{
+    word-break: break-word;
+    overflow: hidden;
+    white-space:nowrap;
+    text-overflow: ellipsis;
+}
+
+
+/* 스핀 버튼 제거 - 모든 브라우저 호환 */
+input[name="year"]::-webkit-outer-spin-button,
+input[name="year"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox에서 스핀 버튼 제거 */
+input[name="year"] {
+  -moz-appearance: textfield;
+}
